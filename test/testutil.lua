@@ -1,9 +1,8 @@
-local luaassert = require('luassert')
-local busted = require('busted')
+local test_assert = require('test.assert')
+---@type test.harness
+local harness = require('test.harness')
 local uv = vim.uv
 local Paths = require('test.cmakeconfig.paths')
-
-luaassert:set_parameter('TableFormatLevel', 100)
 
 --- Functions executing in the context of the test runner (not the current nvim test session).
 --- @class test.testutil
@@ -86,7 +85,7 @@ function M.retry(max, max_ms, fn)
     end
     uv.update_time() -- Update cached value of luv.now() (libuv: uv_now()).
     if (max and tries >= max) or (uv.now() - start_time > timeout) then
-      busted.fail(string.format('retry() attempts: %d\n%s', tries, tostring(result)), 2)
+      error(string.format('retry() attempts: %d\n%s', tries, tostring(result)), 2)
     end
     tries = tries + 1
     uv.sleep(20) -- Avoid hot loop...
@@ -100,10 +99,10 @@ local check_logs_useless_lines = {
 }
 
 function M.eq(expected, actual, context)
-  return luaassert.are.same(expected, actual, context)
+  return test_assert.eq(expected, actual, context)
 end
 function M.neq(expected, actual, context)
-  return luaassert.are_not.same(expected, actual, context)
+  return test_assert.neq(expected, actual, context)
 end
 
 --- Compare paths after resolving symlinks with realpath.
@@ -123,15 +122,6 @@ function M.ok(cond, expected, actual)
   )
   local msg = expected and ('expected %s, got: %s'):format(expected, tostring(actual)) or nil
   return assert(cond, msg)
-end
-
-local function epicfail(state, arguments, _)
-  state.failure_message = arguments[1]
-  return false
-end
-luaassert:register('assertion', 'epicfail', epicfail)
-function M.fail(msg)
-  return luaassert.epicfail(msg)
 end
 
 --- @param pat string
@@ -365,7 +355,7 @@ function M.check_logs()
       end
     end
   end
-  luaassert(
+  test_assert(
     0 == #runtime_errors,
     string.format('Found runtime errors in logfile(s): %s', table.concat(runtime_errors, ', '))
   )
@@ -787,22 +777,10 @@ function M.write_file(name, text, no_dedent, append)
 end
 
 -- Gets the (tail) contents of `logfile`.
--- Also moves the file to "${NVIM_LOG_FILE}.displayed" on CI environments.
-function M.read_nvim_log(logfile, ci_rename)
+function M.read_nvim_log(logfile)
   logfile = logfile or os.getenv('NVIM_LOG_FILE') or 'nvim.log'
-  assert(uv.fs_stat(logfile), ('logfile not found: %q'):format(logfile))
-  local keep = 10
-  local lines = M.read_file_list(logfile, -keep) or {}
-  local log = (
-    ('-'):rep(78)
-    .. '\n'
-    .. string.format('$NVIM_LOG_FILE: %s\n', logfile)
-    .. (#lines > 0 and '(last ' .. tostring(keep) .. ' lines)\n' or '(empty)\n')
-  )
-  for _, line in ipairs(lines) do
-    log = log .. line .. '\n'
-  end
-  log = log .. ('-'):rep(78) .. '\n'
+  local log = harness.read_nvim_log(logfile)
+  assert(log, ('logfile not found: %q'):format(logfile))
   return log
 end
 
@@ -829,7 +807,7 @@ function M.expect_events(expected, received, kind)
     for _, e in ipairs(expected) do
       msg = msg .. '  ' .. vim.inspect(e) .. ';\n'
     end
-    M.fail(msg)
+    error(msg, 2)
   end
   return received
 end
