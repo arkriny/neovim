@@ -1364,6 +1364,10 @@ end
 --- @param params table The parameters for that method.
 function Client:_notification(method, params)
   log.trace('notification', method, params)
+  if self:is_stopped() then
+    log.debug('discarding notification from stopped client', self.id, method)
+    return
+  end
   local handler = self:_resolve_handler(method)
   if handler then
     -- Method name is provided here for convenience.
@@ -1380,6 +1384,18 @@ end
 --- @return lsp.ResponseError? error code and message set in case an exception happens during the request.
 function Client:_server_request(method, params)
   log.trace('server_request', method, params)
+  -- The server should not send requests after a "shutdown" request, but some
+  -- do (e.g. in response to a notification already in flight). Refuse to run
+  -- the handler so interactive handlers (e.g. `window/showMessageRequest`)
+  -- cannot block exiting. Respond with an error so the request id is not
+  -- left dangling.
+  if self:is_stopped() then
+    log.debug('responding with error to request from stopped client', self.id, method)
+    return nil, lsp.rpc_response_error(
+      lsp.protocol.ErrorCodes.RequestCancelled,
+      'Client is stopped'
+    )
+  end
   local handler = self:_resolve_handler(method)
   if handler then
     log.trace('server_request: found handler for', method)
