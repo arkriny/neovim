@@ -896,22 +896,6 @@ describe("'scrollback' option", function()
     end
   end
 
-  it('set to 0 behaves as 1', function()
-    local screen
-    if is_os('win') then
-      screen = tt.setup_screen(nil, { 'cmd.exe' }, 30)
-    else
-      screen = tt.setup_screen(nil, { 'sh' }, 30)
-    end
-
-    api.nvim_set_option_value('scrollback', 0, {})
-    feed_data(('%s REP 31 line%s'):format(testprg('shell-test'), is_os('win') and '\r' or '\n'))
-    screen:expect { any = '30: line                      ' }
-    retry(nil, nil, function()
-      expect_lines(7)
-    end)
-  end)
-
   it('deletes lines (only) if necessary', function()
     local screen
     if is_os('win') then

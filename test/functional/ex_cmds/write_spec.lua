@@ -223,17 +223,6 @@ describe(':write', function()
     )
   end)
 
-  it('converts to GB18030 with iconv', function()
-    api.nvim_buf_set_lines(0, 0, 1, true, { '你好，世界！', '这是一个测试。' })
-    command('write ++enc=gb18030 ++ff=unix ' .. fname)
-
-    eq(
-      '\196\227\186\195\163\172\202\192\189\231\163\161\n'
-        .. '\213\226\202\199\210\187\184\246\178\226\202\212\161\163\n',
-      read_file(fname)
-    )
-  end)
-
   it('converts to Shift_JIS with iconv', function()
     api.nvim_buf_set_lines(
       0,

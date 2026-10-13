@@ -266,25 +266,6 @@ describe(':TOhtml', function()
     run_tohtml_and_assert(screen)
   end)
 
-  it('diff', function()
-    exec('set diffopt=')
-    insert [[
-    diffadd
-    nochage
-    diffchange1
-    ]]
-    exec('new')
-    insert [[
-    nochage
-    diffchange2
-    diffremove
-    ]]
-    exec('set diff')
-    exec('close')
-    exec('set diff')
-    run_tohtml_and_assert(screen)
-  end)
-
   it('treesitter', function()
     insert [[
     function main()

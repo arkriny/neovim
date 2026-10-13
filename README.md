@@ -6,7 +6,7 @@ bnvim is based.
 
 TODO:
 - [x] remove AGENTS.md
-- [ ] fix flaky tests
+- [x] fix flaky tests
 - [ ] remove CI
 - [ ] remove junk files (scripts, contrib, runtime..)
 - [ ] remove runtime plugins

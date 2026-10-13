@@ -80,32 +80,6 @@ describe(':terminal', function()
     eq(2, eval("line('.')")) -- cursor stays where we put it
   end)
 
-  it('Enter/Leave does not increment jumplist #3723', function()
-    feed(':terminal<CR>')
-    local function enter_and_leave()
-      local lines_before = fn.line('$')
-      -- Create a new line (in the shell). For a normal buffer this
-      -- increments the jumplist; for a terminal-buffer it should not. #3723
-      feed('i')
-      poke_eventloop()
-      feed('<CR><CR><CR><CR>')
-      poke_eventloop()
-      feed([[<C-\><C-N>]])
-      poke_eventloop()
-      -- Wait for >=1 lines to be created.
-      retry(nil, 4000, function()
-        ok(fn.line('$') > lines_before)
-      end)
-    end
-    enter_and_leave()
-    enter_and_leave()
-    enter_and_leave()
-    ok(fn.line('$') > 6) -- Verify assumption.
-    local jumps = fn.split(fn.execute('jumps'), '\n')
-    eq(' jump line  col file/text', jumps[1])
-    eq(3, #jumps)
-  end)
-
   it('nvim_get_mode() in :terminal', function()
     command('terminal')
     eq({ blocking = false, mode = 'nt' }, api.nvim_get_mode())

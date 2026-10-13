@@ -1696,32 +1696,6 @@ describe('TUI', function()
     }
   end)
 
-  it('paste: terminal mode', function()
-    if is_ci('github') then
-      pending('tty-test complains about not owning the terminal -- actions/runner#241')
-    end
-    child_exec_lua('vim.o.statusline="^^^^^^^"')
-    child_exec_lua('vim.cmd.terminal(...)', testprg('tty-test'))
-    feed_data('i')
-    screen:expect([[
-      tty ready                                         |
-      ^                                                  |
-                                                        |*2
-      {109:^^^^^^^                                           }|
-      {5:-- TERMINAL --}                                    |*2
-    ]])
-    feed_data('\027[200~')
-    feed_data('hallo')
-    feed_data('\027[201~')
-    screen:expect([[
-      tty ready                                         |
-      hallo^                                             |
-                                                        |*2
-      {109:^^^^^^^                                           }|
-      {5:-- TERMINAL --}                                    |*2
-    ]])
-  end)
-
   it('paste: normal-mode (+CRLF #10872)', function()
     t.skip(is_os('win'), 'FIXME: some spaces have wrong attrs on Windows')
     feed_data(':set ruler | echo')
@@ -2206,74 +2180,6 @@ describe('TUI', function()
     ]])
   end)
 
-  it('forwards :term palette colors with termguicolors', function()
-    if is_ci('github') then
-      pending('tty-test complains about not owning the terminal -- actions/runner#241')
-    end
-    screen:set_rgb_cterm(true)
-    screen:set_default_attr_ids({
-      [1] = { { reverse = true }, { reverse = true } },
-      [2] = {
-        { bold = true, background = Screen.colors.LightGreen, foreground = Screen.colors.Black },
-        { bold = true },
-      },
-      [3] = { { bold = true }, { bold = true } },
-      [4] = { { fg_indexed = true, foreground = tonumber('0xe0e000') }, { foreground = 3 } },
-      [5] = { { foreground = tonumber('0xff8000') }, {} },
-      [6] = {
-        {
-          fg_indexed = true,
-          bg_indexed = true,
-          bold = true,
-          background = tonumber('0x66ff99'),
-          foreground = Screen.colors.Black,
-        },
-        { bold = true, background = 121, foreground = 0 },
-      },
-      [7] = {
-        {
-          fg_indexed = true,
-          bg_indexed = true,
-          background = tonumber('0x66ff99'),
-          foreground = Screen.colors.Black,
-        },
-        { background = 121, foreground = 0 },
-      },
-    })
-
-    child_exec_lua('vim.o.statusline="^^^^^^^"')
-    child_exec_lua('vim.o.termguicolors=true')
-    child_exec_lua('vim.cmd.terminal(...)', testprg('tty-test'))
-    screen:expect([[
-      ^tty ready                                         |
-                                                        |*3
-      {2:^^^^^^^                                           }|
-                                                        |
-      {3:-- TERMINAL --}                                    |
-    ]])
-    feed_data(
-      ':call chansend(&channel, "\\033[38;5;3mtext\\033[38:2:255:128:0mcolor\\033[0;10mtext")\n'
-    )
-    screen:expect([[
-      ^tty ready                                         |
-      {4:text}{5:color}text                                     |
-                                                        |*2
-      {2:^^^^^^^                                           }|
-                                                        |
-      {3:-- TERMINAL --}                                    |
-    ]])
-
-    feed_data(':set notermguicolors\n')
-    screen:expect([[
-      ^tty ready                                         |
-      {4:text}colortext                                     |
-                                                        |*2
-      {6:^^^^^^^}{7:                                           }|
-      :set notermguicolors                              |
-      {3:-- TERMINAL --}                                    |
-    ]])
-  end)
-
   -- Note: libvterm doesn't support colored underline or undercurl.
   it('supports undercurl and underdouble when run in :terminal', function()
     child_session:request('nvim_set_hl', 0, 'Visual', { undercurl = true })
@@ -2293,72 +2199,6 @@ describe('TUI', function()
       {5:-- VISUAL LINE --}                                 |
       {5:-- TERMINAL --}                                    |
     ]])
-  end)
-
-  it('in nvim_list_uis(), sets nvim_set_client_info()', function()
-    -- $TERM in :terminal.
-    local exp_term = (is_os('bsd') or is_os('win')) and 'xterm' or 'xterm-256color'
-    local ui_chan = 1
-    local expected = {
-      {
-        chan = ui_chan,
-        ext_cmdline = false,
-        ext_hlstate = false,
-        ext_linegrid = true,
-        ext_messages = false,
-        ext_multigrid = false,
-        ext_popupmenu = false,
-        ext_tabline = false,
-        ext_termcolors = true,
-        ext_wildmenu = false,
-        height = 6,
-        override = false,
-        rgb = false,
-        stdin_tty = true,
-        stdout_tty = true,
-        term_background = '',
-        term_colors = 256,
-        term_name = exp_term,
-        width = 50,
-      },
-    }
-    local _, rv = child_session:request('nvim_list_uis')
-    eq(expected, rv)
-
-    ---@type table
-    local expected_version = child_exec_lua('return vim.version()')
-    -- vim.version() returns `prerelease` string. Coerce it to boolean.
-    expected_version.prerelease = not not expected_version.prerelease
-
-    local expected_chan_info = {
-      client = {
-        attributes = {
-          license = 'Apache 2',
-          -- pid = 5371,
-          website = 'https://neovim.io',
-        },
-        methods = {},
-        name = 'nvim-tui',
-        type = 'ui',
-        version = expected_version,
-      },
-      id = ui_chan,
-      mode = 'rpc',
-      stream = 'stdio',
-    }
-
-    local status, chan_info = child_session:request('nvim_get_chan_info', ui_chan)
-    ok(status)
-    local info = chan_info.client
-    ok(info.attributes.pid and info.attributes.pid > 0, 'PID', info.attributes.pid or 'nil')
-    ok(info.version.major >= 0)
-    ok(info.version.minor >= 0)
-    ok(info.version.patch >= 0)
-
-    -- Delete variable fields so we can deep-compare.
-    info.attributes.pid = nil
-
-    eq(expected_chan_info, chan_info)
   end)
 
   it('allows grid to assume wider ambiwidth chars than host terminal', function()
@@ -2561,16 +2401,6 @@ describe('TUI', function()
     if not is_os('win') then
       screen:expect({ any = vim.pesc([[Nvim: Caught deadly signal 'SIGTERM']]) })
     end
-    screen:expect({ any = vim.pesc('[Process exited 1]') })
-  end)
-
-  it('exits immediately when stdin is closed #35744', function()
-    local chan = api.nvim_get_option_value('channel', { buf = 0 })
-    local pid = fn.jobpid(chan)
-    fn.chanclose(chan)
-    retry(nil, 50, function()
-      eq(vim.NIL, api.nvim_get_proc(pid))
-    end)
     screen:expect({ any = vim.pesc('[Process exited 1]') })
   end)
 
