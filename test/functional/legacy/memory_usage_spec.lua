@@ -12,20 +12,13 @@ local poke_eventloop = n.poke_eventloop
 local load_adjust = n.load_adjust
 local write_file = t.write_file
 local is_os = t.is_os
-local is_ci = t.is_ci
 
 clear()
 if t.is_asan() then
   pending('ASAN build is difficult to estimate memory usage', function() end)
   return
 elseif is_os('win') then
-  if is_ci('github') then
-    pending(
-      'Windows runners in Github Actions do not have a stable environment to estimate memory usage',
-      function() end
-    )
-    return
-  elseif eval("executable('wmic')") == 0 then
+  if eval("executable('wmic')") == 0 then
     pending('missing "wmic" command', function() end)
     return
   end

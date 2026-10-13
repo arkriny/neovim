@@ -19,7 +19,6 @@ local stop = n.stop
 local NIL = vim.NIL
 local read_file = t.read_file
 local write_file = t.write_file
-local is_ci = t.is_ci
 local api = n.api
 local is_os = t.is_os
 local skip = t.skip
@@ -6015,7 +6014,7 @@ describe('LSP', function()
             skip(is_os('win'), 'not supported on windows')
             skip(is_os('mac'), 'flaky test on mac')
             skip(
-              not is_ci() and fn.executable('inotifywait') == 0,
+              fn.executable('inotifywait') == 0,
               'inotify-tools not installed and not on CI'
             )
             skip(t.is_arch('s390x'), 'inotifywait not available on s390x CI')

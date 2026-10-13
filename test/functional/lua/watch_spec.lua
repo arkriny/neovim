@@ -4,7 +4,6 @@ local n = require('test.functional.testnvim')()
 local eq = t.eq
 local exec_lua = n.exec_lua
 local clear = n.clear
-local is_ci = t.is_ci
 local is_os = t.is_os
 local skip = t.skip
 
@@ -84,7 +83,7 @@ describe('vim._watch', function()
       if watchfunc == 'inotify' then
         skip(is_os('win'), 'not supported on windows')
         skip(is_os('mac'), 'flaky test on mac')
-        skip(not is_ci() and n.fn.executable('inotifywait') == 0, 'inotifywait not found')
+        skip(n.fn.executable('inotifywait') == 0, 'inotifywait not found')
         skip(t.is_arch('s390x'), 'inotifywait not available on s390x CI')
       end
 

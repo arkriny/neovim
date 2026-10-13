@@ -7,7 +7,6 @@ local exec_lua = n.exec_lua
 local clear = n.clear
 local feed = n.feed
 local eval = n.eval
-local is_ci = t.is_ci
 local is_os = t.is_os
 local poke_eventloop = n.poke_eventloop
 
@@ -139,7 +138,7 @@ describe('vim.ui', function()
 
   describe('open()', function()
     it('validation', function()
-      if is_os('win') or not is_ci('github') then
+      if is_os('win') then
         exec_lua [[vim.system = function() return { wait=function() return { code=3 } end } end]]
       end
       if not is_os('bsd') then

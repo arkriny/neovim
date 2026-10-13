@@ -786,23 +786,12 @@ function M.write_file(name, text, no_dedent, append)
   file:close()
 end
 
---- @param name? 'cirrus'|'github'
---- @return boolean
-function M.is_ci(name)
-  local any = (name == nil)
-  assert(any or name == 'github' or name == 'cirrus')
-  local gh = ((any or name == 'github') and nil ~= os.getenv('GITHUB_ACTIONS'))
-  local cirrus = ((any or name == 'cirrus') and nil ~= os.getenv('CIRRUS_CI'))
-  return gh or cirrus
-end
-
 -- Gets the (tail) contents of `logfile`.
 -- Also moves the file to "${NVIM_LOG_FILE}.displayed" on CI environments.
 function M.read_nvim_log(logfile, ci_rename)
   logfile = logfile or os.getenv('NVIM_LOG_FILE') or 'nvim.log'
   assert(uv.fs_stat(logfile), ('logfile not found: %q'):format(logfile))
-  local is_ci = M.is_ci()
-  local keep = is_ci and 100 or 10
+  local keep = 10
   local lines = M.read_file_list(logfile, -keep) or {}
   local log = (
     ('-'):rep(78)
@@ -814,9 +803,6 @@ function M.read_nvim_log(logfile, ci_rename)
     log = log .. line .. '\n'
   end
   log = log .. ('-'):rep(78) .. '\n'
-  if is_ci and ci_rename then
-    os.rename(logfile, logfile .. '.displayed')
-  end
   return log
 end
 

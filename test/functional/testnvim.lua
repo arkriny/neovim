@@ -981,12 +981,6 @@ function M.missing_provider(provider)
 end
 
 local load_factor = 1
-if t.is_ci() then
-  -- Compute load factor only once (but outside of any tests).
-  M.clear()
-  M.request('nvim_command', 'source test/old/testdir/load.vim')
-  load_factor = M.request('nvim_eval', 'g:test_load_factor')
-end
 
 --- @param num number
 --- @return number
