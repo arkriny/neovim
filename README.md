@@ -10,7 +10,7 @@ TODO:
 - [x] remove AGENTS.md
 - [x] fix flaky tests
 - [x] remove CI
-- [ ] remove thirdparty colorschemes
+- [x] remove thirdparty colorschemes
 - [ ] remove syntax files
 - [ ] bombardear el cmake
 - [x] B
