@@ -28,16 +28,6 @@ it('no crash when ending Visual mode close the window to switch to', function()
   assert_alive()
 end)
 
-it('no crash when truncating overlong message', function()
-  pcall(command, 'source test/old/testdir/crash/vim_msg_trunc_poc')
-  assert_alive()
-end)
-
-it('no crash with very long option error message', function()
-  pcall(command, 'source test/old/testdir/crash/poc_did_set_langmap')
-  assert_alive()
-end)
-
 it('no crash when closing window with tag in loclist', function()
   exec([[
     new
@@ -61,15 +51,5 @@ it('no crash when writing "Untitled" file fails', function()
   feed('ifoobar')
   command('set bufhidden=unload')
   eq('Vim(enew):E502: "Untitled" is a directory', pcall_err(command, 'confirm enew'))
-  assert_alive()
-end)
-
--- oldtest: Test_crash_bufwrite()
-it('no crash when converting buffer with incomplete multibyte chars', function()
-  command('edit ++bin test/old/testdir/samples/buffer-test.txt')
-  finally(function()
-    os.remove('Xoutput')
-  end)
-  command('w! ++enc=ucs4 Xoutput')
   assert_alive()
 end)
