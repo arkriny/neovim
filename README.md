@@ -20,7 +20,7 @@ TODO:
 - [x] remove translations
 - [ ] cleanup docs
 - [x] remove AGENTS.md
-- [ ] remove dotfiles
+- [x] remove dotfiles
 - [ ] remove providers except lua
 - [ ] remove bad suckfull unpredictable hostile behaviors like autousing ripgrep
 - [ ] remove :menu and other stinky Vim featurues
