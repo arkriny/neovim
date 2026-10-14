@@ -28,12 +28,6 @@ if get(g:, "ft_html_autocomment", 0)
   let b:undo_ftplugin ..= " | setlocal formatoptions<"
 endif
 
-if exists('&omnifunc')
-  setlocal omnifunc=htmlcomplete#CompleteTags
-  call htmlcomplete#DetectOmniFlavor()
-  let b:undo_ftplugin ..= " | setlocal omnifunc<"
-endif
-
 " HTML: thanks to Johannes Zellner and Benji Fisher.
 if exists("loaded_matchit") && !exists("b:match_words")
   let b:match_ignorecase = 1

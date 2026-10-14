@@ -11,12 +11,4 @@ paste.vim	common code for mswin.vim and menu.vim
 spellfile.vim	downloading of a missing spell file
 
 Omni completion files:
-ccomplete.vim		C
-csscomplete.vim		HTML / CSS
-htmlcomplete.vim	HTML
-javascriptcomplete.vim  Javascript
-phpcomplete.vim		PHP
-pythoncomplete.vim	Python
-rubycomplete.vim	Ruby
 syntaxcomplete.vim	from syntax highlighting
-xmlcomplete.vim		XML (uses files in the xml directory)

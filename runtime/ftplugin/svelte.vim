@@ -17,12 +17,6 @@ setlocal comments=s:<!--,m:\ \ \ \ ,e:-->
 
 let b:undo_ftplugin = 'setlocal comments< commentstring< matchpairs<'
 
-if exists('&omnifunc')
-  setlocal omnifunc=htmlcomplete#CompleteTags
-  call htmlcomplete#DetectOmniFlavor()
-  let b:undo_ftplugin ..= " | setlocal omnifunc<"
-endif
-
 if exists("loaded_matchit") && !exists("b:match_words")
   let b:match_ignorecase = 1
   let b:match_words = '<:>,' .

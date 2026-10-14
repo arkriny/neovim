@@ -620,36 +620,10 @@ func s:XxdFind()
   endif
 endfun
 
-let s:did_setup_compilers = 0
-
-" Setup the Tools.Compiler submenu
-func s:SetupCompilers() abort
-  if s:did_setup_compilers
-    return
-  endif
-  let s:did_setup_compilers = 1
-
-  let n = globpath(&runtimepath, "compiler/*.vim", 1, 1)
-  let idx = 100
-  for name in n
-    " Ignore case for VMS and windows
-    let name = substitute(name, '\c.*[/\\:\]]\([^/\\:]*\)\.vim', '\1', '')
-    exe "an 30.440." . idx . ' &Tools.Se&t\ Compiler.' . name . " :compiler " . name . "<CR>"
-    let idx = idx + 10
-  endfor
-  silent! aunmenu &Tools.Show\ Compiler\ Se&ttings\ in\ Menu
-endfun
-if exists("do_no_lazyload_menus")
-  call s:SetupCompilers()
-else
-  an <silent> 30.440 &Tools.Show\ Compiler\ Se&ttings\ in\ Menu :call <SID>SetupCompilers()<CR>
-endif
-
-" Load ColorScheme, Compiler Setting and Keymap menus when idle.
+" Load ColorScheme and Keymap menus when idle.
 if !exists("do_no_lazyload_menus")
   func s:SetupLazyloadMenus()
     call s:SetupColorSchemes()
-    call s:SetupCompilers()
     if has("keymap")
       call s:SetupKeymaps()
     endif
