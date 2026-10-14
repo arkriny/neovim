@@ -6,7 +6,6 @@ for p in ("${TEST_INCLUDE_DIRS}" .. ";"):gmatch("[^;]+") do
 end
 M.apple_sysroot = "${CMAKE_OSX_SYSROOT}"
 
-M.translations_enabled = "${ENABLE_TRANSLATIONS}" == "ON"
 M.is_asan = "${ENABLE_ASAN_UBSAN}" == "ON"
 M.is_zig_build = false
 M.vterm_test_file = "${VTERM_TEST_FILE}"

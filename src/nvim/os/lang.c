@@ -205,13 +205,6 @@ void ex_language(exarg_T *eap)
     if (loc == NULL) {
       semsg(_("E197: Cannot set language to \"%s\""), name);
     } else {
-#ifdef HAVE_NL_MSG_CAT_CNTR
-      // Need to do this for GNU gettext, otherwise cached translations
-      // will be used again.
-      extern int _nl_msg_cat_cntr;  // NOLINT(bugprone-reserved-identifier)
-
-      _nl_msg_cat_cntr++;
-#endif
       // Reset $LC_ALL, otherwise it would overrule everything.
       os_setenv("LC_ALL", "", 1);
 

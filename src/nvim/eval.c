@@ -211,9 +211,6 @@ void eval_clear(void)
 {
   evalvars_clear();
   free_scriptnames();  // must come after evalvars_clear().
-# ifdef HAVE_WORKING_LIBINTL
-  free_locales();
-# endif
 
   // autoloaded script names
   free_autoload_scriptnames();

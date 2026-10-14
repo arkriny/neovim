@@ -2498,49 +2498,6 @@ it('ui/ext_multigrid supports intro screen', function()
   }
 end)
 
-describe('ui/msg_puts_printf', function()
-  it('output multibyte characters correctly', function()
-    skip(not t.translations_enabled(), 'Nvim not built with ENABLE_TRANSLATIONS')
-    local screen
-    local cmd = ''
-    local build_dir = t.paths.test_build_dir
-    local locale_dir = build_dir .. '/share/locale/ja/LC_MESSAGES'
-
-    clear({ env = { LANG = 'ja_JP.UTF-8' } })
-    screen = Screen.new(25, 5)
-
-    if is_os('win') then
-      if os.execute('chcp 932 > NUL 2>&1') ~= 0 then
-        pending('missing japanese language features', function() end)
-        return
-      else
-        cmd = 'chcp 932 > NUL & '
-      end
-    else
-      if exc_exec('lang ja_JP.UTF-8') ~= 0 then
-        pending('Locale ja_JP.UTF-8 not supported', function() end)
-        return
-      end
-    end
-
-    fn.mkdir(locale_dir, 'p')
-    fn.filecopy(build_dir .. '/src/nvim/po/ja.mo', locale_dir .. '/nvim.mo')
-    finally(function()
-      n.rmdir(vim.fs.dirname(locale_dir))
-    end)
-
-    cmd = cmd .. '"' .. nvim_prog .. '" -u NONE -i NONE -Es -V1'
-    command([[call jobstart(']] .. cmd .. [[',{'term':v:true})]])
-    screen:expect([[
-      ^Exモードに入ります。ノー |
-      マルモードに戻るには "vis|
-      ual" と入力してください。|
-      [Process exited 0]       |
-                               |
-    ]])
-  end)
-end)
-
 describe('pager', function()
   local screen
 

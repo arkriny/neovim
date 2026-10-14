@@ -17,7 +17,7 @@ TODO:
 - [ ] remove junk files (scripts, contrib, runtime..)
 - [ ] remove runtime plugins
 - [ ] remove ftplugins and freinds
-- [ ] remove translations
+- [x] remove translations
 - [ ] cleanup docs
 - [x] remove AGENTS.md
 - [ ] remove dotfiles

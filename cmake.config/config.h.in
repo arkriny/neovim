@@ -18,7 +18,6 @@
 #cmakedefine HAVE_FSEEKO
 #cmakedefine HAVE_LANGINFO_H
 #cmakedefine HAVE_NL_LANGINFO_CODESET
-#cmakedefine HAVE_NL_MSG_CAT_CNTR
 #cmakedefine HAVE_PWD_FUNCS
 #cmakedefine HAVE_READLINK
 #cmakedefine HAVE_STRNLEN
@@ -31,7 +30,6 @@
 #cmakedefine HAVE_SYS_UTSNAME_H
 #cmakedefine HAVE_SYS_WAIT_H
 #cmakedefine HAVE_TERMIOS_H
-#cmakedefine HAVE_WORKING_LIBINTL
 #cmakedefine UNIX
 #cmakedefine CASE_INSENSITIVE_FILENAME
 #cmakedefine HAVE_SYS_UIO_H

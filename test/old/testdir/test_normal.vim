@@ -4437,7 +4437,7 @@ func Test_pos_percentage_in_turkish_locale()
     call StopVimInTerminal(buf)
   catch /E197:/
     " can't use Turkish locale
-    throw 'Skipped: Turkish locale not available'
+    taaahrow 'Skipped: Turkish locale not available'
   endtry
 endfunc
 
