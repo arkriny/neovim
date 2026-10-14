@@ -53,7 +53,7 @@ describe('highlight: `:syntax manual`', function()
     command('bn')
     feed_command('bp')
     screen:expect([[
-      {15:^echo} {26:1}              |
+      ^echo 1              |
       {1:~                   }|*3
       :bp                 |
     ]])
@@ -75,7 +75,7 @@ describe('highlight: `:syntax manual`', function()
     feed_command('silent bp')
     eq('Xtest-functional-ui-highlight.tmp.vim', eval("fnamemodify(bufname('%'), ':t')"))
     screen:expect([[
-      {15:^echo} {26:1}              |
+      ^echo 1              |
       {1:~                   }|*3
       :silent bp          |
     ]])
@@ -950,9 +950,9 @@ describe('CursorLine and CursorLineNr highlights', function()
     command('set cursorline ft=json')
     feed('i{<cr>"a" : abc // 10;<cr>}<cr><esc>')
     screen:expect([[
-      {16:{}                                                 |
-      "{15:a}" : {9:abc} {9:// 10;}                                  |
-      {16:}}                                                 |
+      {                                                 |
+      "a" : abc // 10;                                  |
+      }                                                 |
       {21:^                                                  }|
                                                         |
     ]])
@@ -960,9 +960,9 @@ describe('CursorLine and CursorLineNr highlights', function()
     command('set colorcolumn=3')
     feed('i  <esc>')
     screen:expect([[
-      {16:{} {100: }                                               |
-      "{15:a}{100:"} : {9:abc} {9:// 10;}                                  |
-      {16:}} {100: }                                               |
+      { {100: }                                               |
+      "a{100:"} : abc // 10;                                  |
+      } {100: }                                               |
       {21: ^ }{100: }{21:                                               }|
                                                         |
     ]])

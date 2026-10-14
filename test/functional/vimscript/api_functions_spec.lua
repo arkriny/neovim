@@ -188,26 +188,6 @@ describe('eval-API', function()
     eq({ 'error_types', 'functions', 'types', 'ui_events', 'ui_options', 'version' }, api_keys)
   end)
 
-  it('are highlighted by vim.vim syntax file', function()
-    local screen = Screen.new(40, 8)
-
-    command('set ft=vim')
-    n.add_builddir_to_rtp()
-    command('syntax on')
-    insert([[
-      call bufnr('%')
-      call nvim_input('typing...')
-      call not_a_function(42)]])
-
-    screen:expect([[
-      {15:call} {25:bufnr}{16:(}{26:'%'}{16:)}                         |
-      {15:call} {25:nvim_input}{16:(}{26:'typing...'}{16:)}            |
-      {15:call} {9:not_a_function}{16:(}{26:42}{16:^)}                 |
-      {1:~                                       }|*4
-                                              |
-    ]])
-  end)
-
   it('cannot be called from sandbox', function()
     eq(
       'Vim(call):E48: Not allowed in sandbox',

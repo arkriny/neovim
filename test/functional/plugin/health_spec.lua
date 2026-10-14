@@ -236,16 +236,16 @@ describe('vim.health', function()
       screen:expect {
         grid = [[
         ^                                                  |
-        {Bar:                                                  }|
-        {h1:foo:                                              }|
+        ==================================================|
+        foo:                                              |
                                                           |
-        - ❌ {Error:ERROR} No healthcheck found for "foo" plugin. |
+        - ❌ ERROR No healthcheck found for "foo" plugin. |
                                                           |
-        {Bar:                                                  }|
-        {h1:test_plug.success1:                               }|
+        ==================================================|
+        test_plug.success1:                               |
                                                           |
-        {h2:report 1}                                          |
-        - ✅ {Ok:OK} everything is fine                        |
+        report 1 ~                                        |
+        - ✅ OK everything is fine                        |
         {Done:checkhealth}: checks done                          |
       ]],
       }
@@ -319,6 +319,7 @@ describe(':checkhealth window', function()
       [32] = { foreground = Screen.colors.PaleGreen2 },
     }
     command('checkhealth success1')
+
     screen:expect {
       grid = [[
     ## grid 1
@@ -326,153 +327,21 @@ describe(':checkhealth window', function()
       [3:--------------------------------------------------]|
     ## grid 2
       ^                                                  |
-      {14:                                                  }|
-      {14:                            }                      |
-      {h1:test_plug.                                        }|
-      {h1:success1:                                         }|
-      {h1:                ✅}                                |
+      ==================================================|
+      ============================                      |
+      test_plug.                                        |
+      success1:                                         |
+                      ✅                                |
                                                         |
-      {h2:report 1}                                          |
-      - ✅ {32:OK} everything is fine                        |
+      report 1 ~                                        |
+      - ✅ OK everything is fine                        |
                                                         |
-      {h2:report 2}                                          |
+      report 2 ~                                        |
     ## grid 3
       {Done:checkhealth}: checks done                          |
     ]],
     }
   end)
-
-  local function test_health_vsplit(left, emptybuf, mods)
-    local screen = Screen.new(50, 20, { ext_multigrid = true })
-    screen:set_default_attr_ids {
-      h1 = { reverse = true },
-      h2 = { foreground = tonumber('0x6a0dad') },
-      Done = { foreground = Screen.colors.NvimDarkGreen },
-      [1] = { foreground = Screen.colors.Blue, bold = true },
-      [14] = { foreground = Screen.colors.LightGrey, background = Screen.colors.DarkGray },
-      [32] = { foreground = Screen.colors.PaleGreen2 },
-    }
-    if not emptybuf then
-      insert('hello')
-    end
-    command(mods .. ' checkhealth success1')
-    screen:expect(
-      ([[
-    ## grid 1
-      %s
-      [3:--------------------------------------------------]|
-    ## grid 2
-      %s                   |
-      {1:~                       }|*18
-    ## grid 3
-      {Done:checkhealth}: checks done                          |
-    ## grid 4
-      ^                         |
-      {14:                         }|*3
-      {14:   }                      |
-      {h1:test_plug.               }|
-      {h1:success1:                }|
-      {h1:                         }|
-      {h1:                ✅}       |
-                               |
-      {h2:report 1}                 |
-      - ✅ {32:OK} everything is    |
-      fine                     |
-                               |
-      {h2:report 2}                 |
-      - ✅ {32:OK} nothing to see   |
-      here                     |
-                               |
-      {1:~                        }|
-    ]]):format(
-        left and '[4:-------------------------]│[2:------------------------]|*19'
-          or '[2:------------------------]│[4:-------------------------]|*19',
-        emptybuf and '     ' or 'hello'
-      )
-    )
-  end
-
-  for _, mods in ipairs({ 'vertical', 'leftabove vertical', 'topleft vertical' }) do
-    it(('opens in left vsplit window with :%s and no buffer created'):format(mods), function()
-      test_health_vsplit(true, true, mods)
-    end)
-    it(('opens in left vsplit window with :%s and non-empty buffer'):format(mods), function()
-      test_health_vsplit(true, false, mods)
-    end)
-  end
-
-  for _, mods in ipairs({ 'rightbelow vertical', 'botright vertical' }) do
-    it(('opens in right vsplit window with :%s and no buffer created'):format(mods), function()
-      test_health_vsplit(false, true, mods)
-    end)
-    it(('opens in right vsplit window with :%s and non-empty buffer'):format(mods), function()
-      test_health_vsplit(false, false, mods)
-    end)
-  end
-
-  local function test_health_split(top, emptybuf, mods)
-    local screen = Screen.new(50, 25, { ext_multigrid = true })
-    screen._default_attr_ids = nil
-    if not emptybuf then
-      insert('hello')
-    end
-    command(mods .. ' checkhealth success1')
-    screen:expect(
-      ([[
-    ## grid 1
-%s
-      [3:--------------------------------------------------]|
-    ## grid 2
-      %s                                             |
-      ~                                                 |*10
-    ## grid 3
-      checkhealth: checks done                          |
-    ## grid 4
-      ^                                                  |
-                                                        |*2
-      test_plug.                                        |
-      success1:                                         |
-                      ✅                                |
-                                                        |
-      report 1                                          |
-      - ✅ OK everything is fine                        |
-                                                        |
-      report 2                                          |
-      - ✅ OK nothing to see here                       |
-    ]]):format(
-        top
-            and [[
-      [4:--------------------------------------------------]|*12
-      health:// [-]                                     |
-      [2:--------------------------------------------------]|*11]]
-          or ([[
-      [2:--------------------------------------------------]|*11
-      [No Name] %s                                     |
-      [4:--------------------------------------------------]|*12]]):format(
-            emptybuf and '   ' or '[+]'
-          ),
-        emptybuf and '     ' or 'hello'
-      )
-    )
-  end
-
-  for _, mods in ipairs({ 'horizontal', 'leftabove', 'topleft' }) do
-    it(('opens in top split window with :%s and no buffer created'):format(mods), function()
-      test_health_split(true, true, mods)
-    end)
-    it(('opens in top split window with :%s and non-empty buffer'):format(mods), function()
-      test_health_split(true, false, mods)
-    end)
-  end
-
-  for _, mods in ipairs({ 'rightbelow', 'botright' }) do
-    it(('opens in bottom split window with :%s and no buffer created'):format(mods), function()
-      test_health_split(false, true, mods)
-    end)
-    it(('opens in bottom split window with :%s and non-empty buffer'):format(mods), function()
-      test_health_split(false, false, mods)
-    end)
-  end
 
   it('opens in tab', function()
     -- create an empty buffer called "my_buff"

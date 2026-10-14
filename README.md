@@ -11,7 +11,7 @@ TODO:
 - [x] fix flaky tests
 - [x] remove CI
 - [x] remove thirdparty colorschemes
-- [ ] remove syntax files
+- [x] remove syntax files
 - [ ] bombardear el cmake
 - [x] B
 - [ ] remove junk files (scripts, contrib, runtime..)

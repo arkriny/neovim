@@ -162,10 +162,6 @@ describe(':help', function()
 
     -- Success:
 
-    set_lines 'some plain text'
-    cursor(0, { 1, 5 }) -- on 'plain'
-    eq({ '*ft-plaintex-syntax*', 'syntax.txt' }, open_helptag())
-
     set_lines ':help command'
     cursor(0, { 1, 4 })
     eq({ '*:help*', 'helphelp.txt' }, open_helptag())

@@ -869,20 +869,10 @@ describe('startup', function()
     end)
     clear { args = { '-u', 'Xfloat.vim', '-d', 'Xfloat.vim', 'foo' } }
     local screen = Screen.new(40, 5)
-    screen:add_extra_attr_ids({
-      [101] = {
-        bold = true,
-        background = Screen.colors.LightBlue,
-        foreground = Screen.colors.Brown,
-      },
-      [102] = { foreground = Screen.colors.SlateBlue, background = Screen.colors.LightBlue },
-      [103] = { foreground = Screen.colors.Magenta, background = Screen.colors.LightBlue },
-      [104] = { foreground = Screen.colors.DarkCyan, background = Screen.colors.LightBlue },
-    })
     screen:expect([[
-      {7:  }{101:^let}{22: config }{101:=}{22: }{102:{}{22:                      }│{23:-}|
-      {7: }{101:l}{22:      }{102:\}{22:   }{103:'relative'}{22:: }{103:'editor'}{22:,     }│{23:-}|
-      {7:  }{22:      }{102:\}{22:   }{103:'focusable'}{22:: }{104:v:}{22:false,     }│ |
+      {7:  }{22:^let config = {                      }│{23:-}|
+      {7: }{22:l      \   'relative': 'editor',     }│{23:-}|
+      {7:  }{22:      \   'focusable': v:false,     }│ |
       {3:Xfloat.vim                             }{2:<}|
                                               |
     ]])

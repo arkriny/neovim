@@ -82,8 +82,8 @@ describe(':Man', function()
       exec_lua [[require'man'.init_pager()]]
 
       screen:expect([[
-      ^this {b:is} {b:a} test                                      |
-      with {i:overstruck} text                                |
+      ^this is a test                                      |
+      with overstruck text                                |
       {eob:~                                                   }|*2
                                                           |
       ]])
@@ -110,8 +110,8 @@ describe(':Man', function()
       exec_lua [[require'man'.init_pager()]]
 
       screen:expect([[
-      ^this {b:is }{bi:a }{biu:test}                                      |
-      {u:with} {u:escaped} {u:text}                                   |
+      ^this is a test                                      |
+      with escaped text                                   |
       {eob:~                                                   }|*2
                                                           |
       ]])
@@ -138,60 +138,6 @@ describe(':Man', function()
       screen:expect([[
       ^this Link Title                                     |
       {eob:~                                                   }|*3
-                                                          |
-      ]])
-    end)
-
-    it('highlights multibyte text', function()
-      feed(
-        dedent(
-          [[
-        ithis i<C-v><C-h>is<C-v><C-h>s あ<C-v><C-h>あ test
-        with _<C-v><C-h>ö_<C-v><C-h>v_<C-v><C-h>e_<C-v><C-h>r_<C-v><C-h>s_<C-v><C-h>t_<C-v><C-h>r_<C-v><C-h>u_<C-v><C-h>̃_<C-v><C-h>c_<C-v><C-h>k te<C-v><ESC>[3mxt¶<C-v><ESC>[0m<ESC>]]
-        )
-      )
-      exec_lua [[require'man'.init_pager()]]
-
-      screen:expect([[
-      ^this {b:is} {b:あ} test                                     |
-      with {i:överstrũck} te{i:xt¶}                               |
-      {eob:~                                                   }|*2
-                                                          |
-      ]])
-    end)
-
-    it('highlights underscores based on context', function()
-      feed(
-        dedent(
-          [[
-        i_<C-v><C-h>_b<C-v><C-h>be<C-v><C-h>eg<C-v><C-h>gi<C-v><C-h>in<C-v><C-h>ns<C-v><C-h>s
-        m<C-v><C-h>mi<C-v><C-h>id<C-v><C-h>d_<C-v><C-h>_d<C-v><C-h>dl<C-v><C-h>le<C-v><C-h>e
-        _<C-v><C-h>m_<C-v><C-h>i_<C-v><C-h>d_<C-v><C-h>__<C-v><C-h>d_<C-v><C-h>l_<C-v><C-h>e<ESC>]]
-        )
-      )
-      exec_lua [[require'man'.init_pager()]]
-
-      screen:expect([[
-      {b:^_begins}                                             |
-      {b:mid_dle}                                             |
-      {i:mid_dle}                                             |
-      {eob:~                                                   }|
-                                                          |
-      ]])
-    end)
-
-    it('highlights various bullet formats', function()
-      feed(dedent([[
-        i· ·<C-v><C-h>·
-        +<C-v><C-h>o
-        +<C-v><C-h>+<C-v><C-h>o<C-v><C-h>o double<ESC>]]))
-      exec_lua [[require'man'.init_pager()]]
-
-      screen:expect([[
-      ^· {b:·}                                                 |
-      {b:·}                                                   |
-      {b:·} double                                            |
-      {eob:~                                                   }|
                                                           |
       ]])
     end)

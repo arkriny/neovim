@@ -59,7 +59,7 @@ describe('vim.inspect_pos', function()
       },
       treesitter = {},
       semantic_tokens = {},
-      syntax = { { hl_group = 'luaNumber', hl_group_link = 'Constant' } },
+      syntax = {},
     }, exec_lua('return vim.inspect_pos(0, 0, 10)'))
     -- All extmarks with `filters.extmarks == 'all'`
     eq({
@@ -127,12 +127,8 @@ describe('vim.inspect_pos', function()
       },
       treesitter = {},
       semantic_tokens = {},
-      syntax = { { hl_group = 'luaNumber', hl_group_link = 'Constant' } },
+      syntax = {},
     }, exec_lua('return vim.inspect_pos(0, 0, 10, { extmarks = "all" })'))
-    -- Syntax from other buffer.
-    eq({
-      { hl_group = 'luaComment', hl_group_link = 'Comment' },
-    }, exec_lua('return vim.inspect_pos(_G.buf1, 0, 10).syntax'))
   end)
 end)
 
