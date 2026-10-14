@@ -12,7 +12,7 @@ TODO:
 - [x] remove CI
 - [x] remove thirdparty colorschemes
 - [x] remove syntax files
-- [ ] bombardear el cmake
+- [x] bombardear el cmake
 - [x] B
 - [ ] remove junk files (scripts, contrib, runtime..)
 - [ ] remove runtime plugins
@@ -25,6 +25,7 @@ TODO:
 - [ ] remove bad suckfull unpredictable hostile behaviors like autousing ripgrep
 - [ ] remove :menu and other stinky Vim featurues
 - [ ] remove pre-shipped tree-sitter parsers (hopefully)
+- [ ] build.zig: port old Makefile dev-targets like 'format'
 - [ ] sane defaults
 - [ ] make testsuite run less than 10 minutes on 2026 laptop
 - [ ] setup upstream patches cherry-picking automation

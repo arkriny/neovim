@@ -243,6 +243,7 @@ pub fn build(b: *std.Build) !void {
         });
     }
 
+    // TODO(arkriny): replace with non-cmake zig equivalent
     const versiondef_step = b.addConfigHeader(.{
         .style = .{ .cmake = b.path("cmake.config/versiondef.h.in") },
     }, .{
