@@ -13,20 +13,19 @@ TODO:
 - [x] remove thirdparty colorschemes
 - [x] remove syntax files
 - [x] bombardear el cmake
-- [x] B
-- [ ] remove junk files (scripts, contrib, runtime..)
+- [x] remove translations
+- [x] remove junk files (scripts, contrib, runtime..)
+- [x] remove dotfiles
+- [ ] fix tests leftover files
 - [ ] remove runtime plugins
 - [ ] remove ftplugins and freinds
-- [x] remove translations
 - [ ] cleanup docs
-- [x] remove AGENTS.md
-- [x] remove dotfiles
 - [ ] remove providers except lua
 - [ ] remove bad suckfull unpredictable hostile behaviors like autousing ripgrep
 - [ ] remove :menu and other stinky Vim featurues
 - [ ] remove pre-shipped tree-sitter parsers (hopefully)
-- [ ] build.zig: port old Makefile dev-targets like 'format'
 - [ ] sane defaults
+- [ ] try to remove vimscript
 - [ ] make testsuite run less than 10 minutes on 2026 laptop
 - [ ] setup upstream patches cherry-picking automation
 - [ ] rrewrite in Rust
