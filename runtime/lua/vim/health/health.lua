@@ -19,10 +19,6 @@ local function check_runtime()
     ['autoload/health/nvim.vim'] = false,
     ['autoload/health/provider.vim'] = false,
     ['autoload/man.vim'] = false,
-    ['lua/provider/node/health.lua'] = false,
-    ['lua/provider/perl/health.lua'] = false,
-    ['lua/provider/python/health.lua'] = false,
-    ['lua/provider/ruby/health.lua'] = false,
     ['lua/vim/_defaults.lua'] = false,
     ['lua/vim/_editor.lua'] = false,
     ['lua/vim/_extui.lua'] = false,
@@ -192,72 +188,6 @@ local function check_performance()
     health.warn(
       'Slow shell invocation (took ' .. vim.fn.printf('%.2f', elapsed_time) .. ' seconds).'
     )
-  end
-end
-
--- Load the remote plugin manifest file and check for unregistered plugins
-local function check_rplugin_manifest()
-  health.start('Remote Plugins')
-
-  local existing_rplugins = {} --- @type table<string,string>
-  --- @type {path:string}[]
-  local items = vim.fn['remote#host#PluginsForHost']('python3')
-  for _, item in ipairs(items) do
-    existing_rplugins[item.path] = 'python3'
-  end
-
-  local require_update = false
-  local handle_path = function(path)
-    --- @type string[]
-    local python_glob = vim.fn.glob(path .. '/rplugin/python*', true, true)
-    if vim.tbl_isempty(python_glob) then
-      return
-    end
-
-    local python_dir = python_glob[1]
-    local python_version = vim.fs.basename(python_dir)
-
-    --- @type string[]
-    local scripts = vim.fn.glob(python_dir .. '/*.py', true, true)
-    vim.list_extend(scripts, vim.fn.glob(python_dir .. '/*/__init__.py', true, true))
-
-    for _, script in ipairs(scripts) do
-      local contents = vim.fn.join(vim.fn.readfile(script))
-      if vim.regex([[\<\%(from\|import\)\s\+neovim\>]]):match_str(contents) then
-        if vim.regex([[[\/]__init__\.py$]]):match_str(script) then
-          script = vim.fs.normalize(vim.fs.dirname(script))
-        end
-        if not existing_rplugins[script] then
-          local msg = vim.fn.printf('"%s" is not registered.', vim.fs.basename(path))
-          if python_version == 'pythonx' then
-            if vim.fn.has('python3') == 0 then
-              msg = msg .. ' (python3 not available)'
-            end
-          elseif vim.fn.has(python_version) == 0 then
-            msg = msg .. vim.fn.printf(' (%s not available)', python_version)
-          else
-            require_update = true
-          end
-
-          health.warn(msg)
-        end
-
-        break
-      end
-    end
-  end
-
-  --- @type string[]
-  local paths = vim.fn.map(vim.split(vim.o.runtimepath, ','), 'resolve(v:val)')
-
-  for _, path in ipairs(paths) do
-    handle_path(path)
-  end
-
-  if require_update then
-    health.warn('Out of date', { 'Run `:UpdateRemotePlugins`' })
-  else
-    health.ok('Up to date')
   end
 end
 
@@ -704,7 +634,6 @@ function M.check()
   check_config()
   check_runtime()
   check_performance()
-  check_rplugin_manifest()
   check_terminal()
   check_tmux()
   check_external_tools()

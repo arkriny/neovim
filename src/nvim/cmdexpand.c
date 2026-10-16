@@ -1498,13 +1498,6 @@ static const char *set_cmd_index(const char *cmd, exarg_T *eap, expand_T *xp, in
         p++;
       }
     }
-    // for python 3.x: ":py3*" commands completion
-    if (cmd[0] == 'p' && cmd[1] == 'y' && p == cmd + 2 && *p == '3') {
-      p++;
-      while (ASCII_ISALPHA(*p) || *p == '*') {
-        p++;
-      }
-    }
     // check for non-alpha command
     if (p == cmd && vim_strchr("@*!=><&~#", (uint8_t)(*p)) != NULL) {
       p++;

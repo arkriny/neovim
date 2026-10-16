@@ -4700,8 +4700,6 @@ has({feature})                                                           *has()*
 			linux		Linux system.
 			mac		MacOS system.
 			nvim		This is Nvim.
-			python3		Legacy Vim |python3| interface. |has-python|
-			pythonx		Legacy Vim |python_x| interface. |has-pythonx|
 			sun		SunOS system.
 			*termux*	Termux, an |android| terminal app and packaging environment.
 			ttyin		input is a terminal (tty).
@@ -7180,27 +7178,6 @@ pathshorten({path} [, {len}])                                    *pathshorten()*
                 Return: ~
                   (`string`)
 
-perleval({expr})                                                    *perleval()*
-		Evaluate |perl| expression {expr} and return its result
-		converted to Vim data structures.
-		Numbers and strings are returned as they are (strings are
-		copied though).
-		Lists are represented as Vim |List| type.
-		Dictionaries are represented as Vim |Dictionary| type,
-		non-string keys result in error.
-
-		Note: If you want an array or hash, {expr} must return a
-		reference to it.
-		Example: >vim
-			echo perleval('[1 .. 4]')
-<			[1, 2, 3, 4]
-
-                Parameters: ~
-                  • {expr} (`any`)
-
-                Return: ~
-                  (`any`)
-
 pow({x}, {y})                                                            *pow()*
 		Return the power of {x} to the exponent {y} as a |Float|.
 		{x} and {y} must evaluate to a |Float| or a |Number|.
@@ -7722,49 +7699,6 @@ pumvisible()                                                      *pumvisible()*
                 Return: ~
                   (`any`)
 
-py3eval({expr})                                                      *py3eval()*
-		Evaluate Python expression {expr} and return its result
-		converted to Vim data structures.
-		Numbers and strings are returned as they are (strings are
-		copied though, Unicode strings are additionally converted to
-		UTF-8).
-		Lists are represented as Vim |List| type.
-		Dictionaries are represented as Vim |Dictionary| type with
-		keys converted to strings.
-
-                Parameters: ~
-                  • {expr} (`any`)
-
-                Return: ~
-                  (`any`)
-
-pyeval({expr})                                              *pyeval()* *E858* *E859*
-		Evaluate Python expression {expr} and return its result
-		converted to Vim data structures.
-		Numbers and strings are returned as they are (strings are
-		copied though).
-		Lists are represented as Vim |List| type.
-		Dictionaries are represented as Vim |Dictionary| type,
-		non-string keys result in error.
-
-                Parameters: ~
-                  • {expr} (`any`)
-
-                Return: ~
-                  (`any`)
-
-pyxeval({expr})                                                      *pyxeval()*
-		Evaluate Python expression {expr} and return its result
-		converted to Vim data structures.
-		Uses Python 2 or 3, see |python_x| and 'pyxversion'.
-		See also: |pyeval()|, |py3eval()|
-
-                Parameters: ~
-                  • {expr} (`any`)
-
-                Return: ~
-                  (`any`)
-
 rand([{expr}])                                                          *rand()*
 		Return a pseudo-random Number generated with an xoshiro128**
 		algorithm using seed {expr}.  The returned number is 32 bits,
@@ -8213,22 +8147,6 @@ rpcrequest({channel}, {method} [, {args}...])                     *rpcrequest()*
                   • {channel} (`integer`)
                   • {method} (`string`)
                   • {...} (`any`)
-
-                Return: ~
-                  (`any`)
-
-rubyeval({expr})                                                    *rubyeval()*
-		Evaluate Ruby expression {expr} and return its result
-		converted to Vim data structures.
-		Numbers, floats and strings are returned as they are (strings
-		are copied though).
-		Arrays are represented as Vim |List| type.
-		Hashes are represented as Vim |Dictionary| type.
-		Other objects are represented as strings resulted from their
-		"Object#to_s" method.
-
-                Parameters: ~
-                  • {expr} (`any`)
 
                 Return: ~
                   (`any`)

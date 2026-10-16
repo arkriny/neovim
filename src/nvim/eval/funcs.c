@@ -2864,8 +2864,6 @@ static void f_has(typval_T *argvars, typval_T *rettv, EvalFuncData fptr)
     } else if (STRICMP(name, "unnamedplus") == 0) {
       n = eval_has_provider("clipboard", true);
 #endif
-    } else if (STRICMP(name, "pythonx") == 0) {
-      n = eval_has_provider("python3", true);
     } else if (eval_has_provider(name, true)) {
       n = true;
     }
@@ -4934,12 +4932,6 @@ static void f_pumvisible(typval_T *argvars, typval_T *rettv, EvalFuncData fptr)
   }
 }
 
-/// "py3eval()" and "pyxeval()" functions (always python3)
-static void f_py3eval(typval_T *argvars, typval_T *rettv, EvalFuncData fptr)
-{
-  script_host_eval("python3", argvars, rettv);
-}
-
 static void init_srand(uint32_t *const x)
   FUNC_ATTR_NONNULL_ALL
 {
@@ -5075,18 +5067,6 @@ static void f_srand(typval_T *argvars, typval_T *rettv, EvalFuncData fptr)
   tv_list_append_number(rettv->vval.v_list, (varnumber_T)splitmix32(&x));
   tv_list_append_number(rettv->vval.v_list, (varnumber_T)splitmix32(&x));
   tv_list_append_number(rettv->vval.v_list, (varnumber_T)splitmix32(&x));
-}
-
-/// "perleval()" function
-static void f_perleval(typval_T *argvars, typval_T *rettv, EvalFuncData fptr)
-{
-  script_host_eval("perl", argvars, rettv);
-}
-
-/// "rubyeval()" function
-static void f_rubyeval(typval_T *argvars, typval_T *rettv, EvalFuncData fptr)
-{
-  script_host_eval("ruby", argvars, rettv);
 }
 
 /// "range()" function

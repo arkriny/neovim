@@ -704,8 +704,8 @@ static char *eval_all_expr_in_str(char *str)
 /// marker, then the leading indentation before the lines (matching the
 /// indentation in the 'cmd' line) is stripped.
 ///
-/// When getting lines for an embedded script (e.g. python, lua, perl, ruby,
-/// tcl, mzscheme), "script_get" is set to true. In this case, if the marker is
+/// When getting lines for an embedded script (e.g. lua),
+/// "script_get" is set to true. In this case, if the marker is
 /// missing, then '.' is accepted as a marker.
 ///
 /// @return  a List with {lines} or NULL on failure.

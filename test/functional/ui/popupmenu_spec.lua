@@ -8918,9 +8918,9 @@ describe('builtin popupmenu', function()
             │{n: tags           }│{1:            }|
             │{n: tcd            }{c: }{1:            }|
             │{12: tchdir         }│{1:            }|
-            │{n: tcl            }│{1:            }|
-            │{n: tcldo          }│{1:            }|
-            │{n: tclfile        }│{1:            }|
+            │{n: terminal       }│{1:            }|
+            │{n: tfirst         }│{1:            }|
+            │{n: throw          }│{1:            }|
             ╰────────────────╯{1:            }|
             :tchdir^                       |
           ]])

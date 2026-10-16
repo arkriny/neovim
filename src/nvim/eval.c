@@ -6510,22 +6510,6 @@ Channel *find_job(uint64_t id, bool show_error)
   return data;
 }
 
-void script_host_eval(char *name, typval_T *argvars, typval_T *rettv)
-{
-  if (check_secure()) {
-    return;
-  }
-
-  if (argvars[0].v_type != VAR_STRING) {
-    emsg(_(e_invarg));
-    return;
-  }
-
-  list_T *args = tv_list_alloc(1);
-  tv_list_append_string(args, argvars[0].vval.v_string, -1);
-  *rettv = eval_call_provider(name, "eval", args, false);
-}
-
 /// @param discard  Clears the value returned by the provider and returns
 ///                 an empty typval_T.
 typval_T eval_call_provider(char *provider, char *method, list_T *arguments, bool discard)
@@ -6590,13 +6574,7 @@ typval_T eval_call_provider(char *provider, char *method, list_T *arguments, boo
 /// Checks if provider for feature `feat` is enabled.
 bool eval_has_provider(const char *feat, bool throw_if_fast)
 {
-  if (!strequal(feat, "clipboard")
-      && !strequal(feat, "python3")
-      && !strequal(feat, "python3_compiled")
-      && !strequal(feat, "python3_dynamic")
-      && !strequal(feat, "perl")
-      && !strequal(feat, "ruby")
-      && !strequal(feat, "node")) {
+  if (!strequal(feat, "clipboard")) {
     // Avoid autoload for non-provider has() features.
     return false;
   }
@@ -6606,7 +6584,7 @@ bool eval_has_provider(const char *feat, bool throw_if_fast)
     return false;
   }
 
-  char name[32];  // Normalized: "python3_compiled" => "python3".
+  char name[32];  // Chop any "_xx" suffix.
   snprintf(name, sizeof(name), "%s", feat);
   strchrsub(name, '_', NUL);  // Chop any "_xx" suffix.
 

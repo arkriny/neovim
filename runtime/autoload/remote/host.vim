@@ -53,17 +53,6 @@ function! remote#host#IsRunning(name) abort
   return s:hosts[a:name].channel != 0
 endfunction
 
-" Example of registering a Python plugin with two commands (one async), one
-" autocmd (async) and one function (sync):
-"
-" let s:plugin_path = expand('<sfile>:p:h').'/nvim_plugin.py'
-" call remote#host#RegisterPlugin('python', s:plugin_path, [
-"   \ {'type': 'command', 'name': 'PyCmd', 'sync': 1, 'opts': {}},
-"   \ {'type': 'command', 'name': 'PyAsyncCmd', 'sync': 0, 'opts': {'eval': 'cursor()'}},
-"   \ {'type': 'autocmd', 'name': 'BufEnter', 'sync': 0, 'opts': {'eval': 'expand("<afile>")'}},
-"   \ {'type': 'function', 'name': 'PyFunc', 'sync': 1, 'opts': {}}
-"   \ ])
-"
 " The third item in a declaration is a boolean: non zero means the command,
 " autocommand or function will be executed synchronously with rpcrequest.
 function! remote#host#RegisterPlugin(host, path, specs) abort
@@ -188,20 +177,4 @@ function! remote#host#LoadErrorForHost(host, log) abort
         \ ' Also, the host stderr is available in messages.'
 endfunction
 
-" Registration of standard hosts
 
-" Python3
-call remote#host#Register('python3', '*',
-      \ function('provider#python3#Require'))
-
-" Ruby
-call remote#host#Register('ruby', '*.rb',
-      \ function('provider#ruby#Require'))
-
-" nodejs
-call remote#host#Register('node', '*',
-      \ function('provider#node#Require'))
-
-" perl
-call remote#host#Register('perl', '*',
-      \ function('provider#perl#Require'))

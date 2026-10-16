@@ -92,11 +92,6 @@ Examples:
 1. In the Vim source code, clipboard logic accounts for more than 1k lines of
    C source code (ui.c), to perform two tasks that are now accomplished with
    shell commands such as xclip or pbcopy/pbpaste.
-2. Python scripting support: Vim has three files dedicated to embedding the
-   Python interpreter: if_python.c, if_python3.c and if_py_both.h. Together
-   these files sum about 9.5k lines of C source code. In contrast, Nvim Python
-   scripting is performed by an external host process implemented in ~2k lines
-   of Python.
 
 The provider framework invokes Vimscript from C.  It is composed of two
 functions in eval.c:
@@ -109,10 +104,6 @@ functions in eval.c:
   which must be set to 2 by the provider script to indicate that it is
   "enabled and working". Called by |has()| to check if features are available.
 
-For example, the Python provider is implemented by the
-"autoload/provider/python.vim" script, which sets `g:loaded_python_provider`
-to 2 only if a valid external Python host is found.  Then `has("python")`
-reflects whether Python support is working.
 
                                                         *provider-reload*
 Sometimes a GUI or other application may want to force a provider to

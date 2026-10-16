@@ -964,23 +964,6 @@ function M.new_pipename()
   return pipename
 end
 
---- @param provider string
---- @return string|boolean?
-function M.missing_provider(provider)
-  if provider == 'ruby' or provider == 'perl' then
-    --- @type string?
-    local e = M.exec_lua("return {require('vim.provider." .. provider .. "').detect()}")[2]
-    return e ~= '' and e or false
-  elseif provider == 'node' then
-    --- @type string?
-    local e = M.fn['provider#node#Detect']()[2]
-    return e ~= '' and e or false
-  elseif provider == 'python' then
-    return M.exec_lua([[return {require('vim.provider.python').detect_by_module('neovim')}]])[2]
-  end
-  assert(false, 'Unknown provider: ' .. provider)
-end
-
 local load_factor = 1
 
 --- @param num number

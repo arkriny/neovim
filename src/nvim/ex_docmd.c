@@ -1986,26 +1986,17 @@ static bool skip_cmd(const exarg_T *eap)
     case CMD_lockvar:
     case CMD_lua:
     case CMD_match:
-    case CMD_mzscheme:
     case CMD_noautocmd:
     case CMD_noswapfile:
-    case CMD_perl:
     case CMD_psearch:
-    case CMD_python:
-    case CMD_py3:
-    case CMD_python3:
-    case CMD_pythonx:
-    case CMD_pyx:
     case CMD_return:
     case CMD_rightbelow:
-    case CMD_ruby:
     case CMD_silent:
     case CMD_smagic:
     case CMD_snomagic:
     case CMD_substitute:
     case CMD_syntax:
     case CMD_tab:
-    case CMD_tcl:
     case CMD_throw:
     case CMD_tilde:
     case CMD_topleft:
@@ -3174,12 +3165,6 @@ char *find_ex_command(exarg_T *eap, int *full)
   } else {
     while (ASCII_ISALPHA(*p)) {
       p++;
-    }
-    // for python 3.x support ":py3", ":python3", ":py3file", etc.
-    if (eap->cmd[0] == 'p' && eap->cmd[1] == 'y') {
-      while (ASCII_ISALNUM(*p)) {
-        p++;
-      }
     }
 
     // check for non-alpha command

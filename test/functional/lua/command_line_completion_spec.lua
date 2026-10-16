@@ -189,22 +189,6 @@ describe('nlua_expand_pat', function()
       }
       eq(expected, actual)
     end)
-    it('does not suggest "#" items', function()
-      exec_lua [[
-        -- ensure remote#host#... functions exist
-        vim.cmd [=[
-          runtime! autoload/remote/host.vim
-        ]=]
-        -- make a dummy call to ensure vim.fn contains an entry: remote#host#...
-        vim.fn['remote#host#IsRunning']('python3')
-      ]]
-      local actual = get_completions('vim.fn.remo')
-      local expected = {
-        { 'remove' }, -- there should be no completion "remote#host#..."
-        #'vim.fn.',
-      }
-      eq(expected, actual)
-    end)
   end)
 
   describe('completes', function()

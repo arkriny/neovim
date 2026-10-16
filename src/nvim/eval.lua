@@ -7964,29 +7964,6 @@ M.funcs = {
     returns = 'string',
     signature = 'pathshorten({path} [, {len}])',
   },
-  perleval = {
-    args = 1,
-    base = 1,
-    desc = [=[
-      Evaluate |perl| expression {expr} and return its result
-      converted to Vim data structures.
-      Numbers and strings are returned as they are (strings are
-      copied though).
-      Lists are represented as Vim |List| type.
-      Dictionaries are represented as Vim |Dictionary| type,
-      non-string keys result in error.
-
-      Note: If you want an array or hash, {expr} must return a
-      reference to it.
-      Example: >vim
-      	echo perleval('[1 .. 4]')
-      <	[1, 2, 3, 4]
-
-    ]=],
-    name = 'perleval',
-    params = { { 'expr', 'any' } },
-    signature = 'perleval({expr})',
-  },
   pow = {
     args = 2,
     base = 1,
@@ -8528,58 +8505,6 @@ M.funcs = {
     params = {},
     signature = 'pumvisible()',
   },
-  py3eval = {
-    args = 1,
-    base = 1,
-    desc = [=[
-      Evaluate Python expression {expr} and return its result
-      converted to Vim data structures.
-      Numbers and strings are returned as they are (strings are
-      copied though, Unicode strings are additionally converted to
-      UTF-8).
-      Lists are represented as Vim |List| type.
-      Dictionaries are represented as Vim |Dictionary| type with
-      keys converted to strings.
-
-    ]=],
-    name = 'py3eval',
-    params = { { 'expr', 'any' } },
-    signature = 'py3eval({expr})',
-  },
-  pyeval = {
-    args = 1,
-    base = 1,
-    desc = [=[
-      Evaluate Python expression {expr} and return its result
-      converted to Vim data structures.
-      Numbers and strings are returned as they are (strings are
-      copied though).
-      Lists are represented as Vim |List| type.
-      Dictionaries are represented as Vim |Dictionary| type,
-      non-string keys result in error.
-
-    ]=],
-    func = 'f_py3eval',
-    name = 'pyeval',
-    params = { { 'expr', 'any' } },
-    signature = 'pyeval({expr})',
-    tags = { 'E858', 'E859' },
-  },
-  pyxeval = {
-    args = 1,
-    base = 1,
-    desc = [=[
-      Evaluate Python expression {expr} and return its result
-      converted to Vim data structures.
-      Uses Python 2 or 3, see |python_x| and 'pyxversion'.
-      See also: |pyeval()|, |py3eval()|
-
-    ]=],
-    func = 'f_py3eval',
-    name = 'pyxeval',
-    params = { { 'expr', 'any' } },
-    signature = 'pyxeval({expr})',
-  },
   rand = {
     args = { 0, 1 },
     base = 1,
@@ -9116,24 +9041,6 @@ M.funcs = {
     ]=],
     params = VARARGS,
     signature = 'rpcstop(...)',
-  },
-  rubyeval = {
-    args = 1,
-    base = 1,
-    desc = [=[
-      Evaluate Ruby expression {expr} and return its result
-      converted to Vim data structures.
-      Numbers, floats and strings are returned as they are (strings
-      are copied though).
-      Arrays are represented as Vim |List| type.
-      Hashes are represented as Vim |Dictionary| type.
-      Other objects are represented as strings resulted from their
-      "Object#to_s" method.
-
-    ]=],
-    name = 'rubyeval',
-    params = { { 'expr', 'any' } },
-    signature = 'rubyeval({expr})',
   },
   screenattr = {
     args = 2,

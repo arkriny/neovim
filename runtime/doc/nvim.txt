@@ -68,9 +68,6 @@ Transitioning from Vim                                         *nvim-from-vim*
 
     :restart
 
-See |provider-python| and |provider-clipboard| for additional software you
-might need to use some features.
-
 Your Vim configuration might not be entirely Nvim-compatible (see
 |vim-differences|). For example the 'ttymouse' option was removed from Nvim,
 because mouse support is always enabled if possible. If you use the same

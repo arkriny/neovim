@@ -10,7 +10,6 @@ local api = n.api
 local clear = n.clear
 local dedent = t.dedent
 local exc_exec = n.exc_exec
-local missing_provider = n.missing_provider
 
 local tmpfile = 'X_ex_cmds_script'
 
@@ -94,16 +93,6 @@ describe('script_get-based command', function()
 
   -- Built-in scripts
   test_garbage_exec('lua', true)
-
-  -- Provider-based scripts
-  test_garbage_exec('ruby', not missing_provider('ruby'))
-  test_garbage_exec('python3', not missing_provider('python'))
-
-  -- Missing scripts
-  test_garbage_exec('python', false)
-  test_garbage_exec('tcl', false)
-  test_garbage_exec('mzscheme', false)
-  test_garbage_exec('perl', false)
 
   -- Not really a script
   test_garbage_exec('xxxinvalidlanguagexxx', true)

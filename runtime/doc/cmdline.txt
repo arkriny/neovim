@@ -615,9 +615,6 @@ followed by another Vim command:
     :lsp
     :make
     :normal
-    :perlfile
-    :pyfile
-    :python
     :registers
     :read !
     :sign

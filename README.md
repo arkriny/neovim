@@ -16,11 +16,11 @@ TODO:
 - [x] remove translations
 - [x] remove junk files (scripts, contrib, runtime..)
 - [x] remove dotfiles
+- [x] remove legacy language providers
 - [ ] fix tests leftover files
 - [ ] remove runtime plugins
 - [ ] remove ftplugins and freinds
 - [ ] cleanup docs
-- [ ] remove providers except lua
 - [ ] remove bad suckfull unpredictable hostile behaviors like autousing ripgrep
 - [ ] remove :menu and other stinky Vim featurues
 - [ ] remove pre-shipped tree-sitter parsers (hopefully)

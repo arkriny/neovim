@@ -54,51 +54,6 @@
 static const char e_compiler_not_supported_str[]
   = N_("E666: Compiler not supported: %s");
 
-void ex_ruby(exarg_T *eap)
-{
-  script_host_execute("ruby", eap);
-}
-
-void ex_rubyfile(exarg_T *eap)
-{
-  script_host_execute_file("ruby", eap);
-}
-
-void ex_rubydo(exarg_T *eap)
-{
-  script_host_do_range("ruby", eap);
-}
-
-void ex_python3(exarg_T *eap)
-{
-  script_host_execute("python3", eap);
-}
-
-void ex_py3file(exarg_T *eap)
-{
-  script_host_execute_file("python3", eap);
-}
-
-void ex_pydo3(exarg_T *eap)
-{
-  script_host_do_range("python3", eap);
-}
-
-void ex_perl(exarg_T *eap)
-{
-  script_host_execute("perl", eap);
-}
-
-void ex_perlfile(exarg_T *eap)
-{
-  script_host_execute_file("perl", eap);
-}
-
-void ex_perldo(exarg_T *eap)
-{
-  script_host_do_range("perl", eap);
-}
-
 /// If 'autowrite' option set, try to write the file.
 /// Careful: autocommands may make "buf" invalid!
 ///
@@ -791,50 +746,6 @@ void ex_checktime(exarg_T *eap)
     }
   }
   no_check_timestamps = save_no_check_timestamps;
-}
-
-static void script_host_execute(char *name, exarg_T *eap)
-{
-  size_t len;
-  char *const script = script_get(eap, &len);
-
-  if (script != NULL) {
-    list_T *const args = tv_list_alloc(3);
-    // script
-    tv_list_append_allocated_string(args, script);
-    // current range
-    tv_list_append_number(args, (int)eap->line1);
-    tv_list_append_number(args, (int)eap->line2);
-
-    eval_call_provider(name, "execute", args, true);
-  }
-}
-
-static void script_host_execute_file(char *name, exarg_T *eap)
-{
-  if (!eap->skip) {
-    uint8_t buffer[MAXPATHL];
-    vim_FullName(eap->arg, (char *)buffer, sizeof(buffer), false);
-
-    list_T *args = tv_list_alloc(3);
-    // filename
-    tv_list_append_string(args, (const char *)buffer, -1);
-    // current range
-    tv_list_append_number(args, (int)eap->line1);
-    tv_list_append_number(args, (int)eap->line2);
-    eval_call_provider(name, "execute_file", args, true);
-  }
-}
-
-static void script_host_do_range(char *name, exarg_T *eap)
-{
-  if (!eap->skip) {
-    list_T *args = tv_list_alloc(3);
-    tv_list_append_number(args, (int)eap->line1);
-    tv_list_append_number(args, (int)eap->line2);
-    tv_list_append_string(args, eap->arg, -1);
-    eval_call_provider(name, "do_range", args, true);
-  }
 }
 
 /// ":drop"
