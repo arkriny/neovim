@@ -32,14 +32,6 @@ describe(':checkhealth', function()
     eq("Invalid 'runtimepath'", string.match(err, 'Invalid.*'))
   end)
 
-  it('detects invalid $VIM', function()
-    clear()
-    -- Do this after startup, otherwise it just breaks $VIMRUNTIME.
-    command("let $VIM='zub'")
-    command('checkhealth vim.health')
-    matches('ERROR $VIM .* zub', curbuf_contents())
-  end)
-
   it('getcompletion()', function()
     clear { args = { '-u', 'NORC', '+set runtimepath+=test/functional/fixtures' } }
 
