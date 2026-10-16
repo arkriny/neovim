@@ -1,14 +1,5 @@
 --- @alias test.reporter.SummaryStatus 'skipped' | 'failure' | 'error'
 
---- @class test.reporter.ColorMap
---- @field bright fun(s: any): string
---- @field green fun(s: any): string
---- @field yellow fun(s: any): string
---- @field magenta fun(s: any): string
---- @field red fun(s: any): string
---- @field cyan fun(s: any): string
---- @field dim fun(s: any): string
-
 --- @class test.reporter.FileElement
 --- @field name string
 --- @field duration? number
@@ -28,49 +19,8 @@
 
 --- @class test.reporter : test.base_reporter
 --- @field opts test.reporter.Options
---- @field colors test.reporter.ColorMap
 local M = {}
 M.__index = M
-
---- @return test.reporter.ColorMap
-local function identity_colors()
-  return setmetatable({}, {
-    __index = function()
-      return function(s)
-        return s == nil and '' or tostring(s)
-      end
-    end,
-  })
-end
-
---- @param code string
---- @return fun(s: any): string
-local function ansi_color(code)
-  return function(s)
-    return ('\27[%sm%s\27[0m'):format(code, s == nil and '' or tostring(s))
-  end
-end
-
-local ansi_colors = {
-  bright = ansi_color('1'),
-  green = ansi_color('32'),
-  yellow = ansi_color('33'),
-  magenta = ansi_color('35'),
-  red = ansi_color('31'),
-  cyan = ansi_color('36'),
-  dim = ansi_color('2'),
-}
-
---- @return boolean
-local function use_colors()
-  local test_colors = os.getenv('TEST_COLORS')
-  if not test_colors then
-    return true
-  end
-
-  local value = test_colors:lower()
-  return not (value == 'false' or value == '0' or value == 'no' or value == 'off')
-end
 
 --- @param path? string
 --- @return file
@@ -85,15 +35,9 @@ end
 --- @param opts test.reporter.Options
 --- @return test.reporter
 function M.new(opts)
-  local colors = identity_colors()
-  if use_colors() then
-    colors = ansi_colors
-  end
-
   --- @type test.reporter
   local self = setmetatable({
     opts = opts,
-    colors = colors,
   }, M)
 
   return self
@@ -110,74 +54,18 @@ local function get_elapsed_time_ms(element)
 end
 
 --- @private
---- @param s any
---- @return string
-function M:succ(s)
-  return self.colors.bright(self.colors.green(s))
-end
-
---- @private
---- @param s any
---- @return string
-function M:skip(s)
-  return self.colors.bright(self.colors.yellow(s))
-end
-
---- @private
---- @param s any
---- @return string
-function M:fail(s)
-  return self.colors.bright(self.colors.magenta(s))
-end
-
---- @private
---- @param s any
---- @return string
-function M:errr(s)
-  return self.colors.bright(self.colors.red(s))
-end
-
---- @private
---- @param s any
---- @return string
-function M:fpath(s)
-  return self.colors.cyan(s)
-end
-
---- @private
---- @param s any
---- @return string
-function M:time(s)
-  return self.colors.dim(s)
-end
-
---- @private
---- @param s any
---- @return string
-function M:sect(s)
-  return self.colors.green(self.colors.dim(s))
-end
-
---- @private
---- @param s any
---- @return string
-function M:nmbr(s)
-  return self.colors.bright(s)
-end
-
---- @private
 --- @param status test.harness.ResultStatus
 --- @return string
 function M:result_text(status)
   if status == 'success' then
-    return ('%s\n'):format(self:succ('OK'))
+    return 'OK\n'
   elseif status == 'pending' then
-    return ('%s\n'):format(self:skip('SKIP'))
+    return 'SKIP\n'
   elseif status == 'failure' then
-    return ('%s\n'):format(self:fail('FAIL'))
+    return 'FAIL\n'
   end
 
-  return ('%s\n'):format(self:errr('ERR'))
+  return 'ERR\n'
 end
 
 --- @private
@@ -185,12 +73,12 @@ end
 --- @return string
 function M:summary_label(status)
   if status == 'skipped' then
-    return self:skip('SKIPPED ')
+    return 'SKIPPED '
   elseif status == 'failure' then
-    return self:fail('FAILED  ')
+    return 'FAILED  '
   end
 
-  return self:errr('ERROR   ')
+  return 'ERROR   '
 end
 
 --- @private
@@ -288,7 +176,7 @@ function M:get_file_line(trace)
 
   local source = vim.fs.normalize(trace.short_src)
   local line = trace.currentline or 0
-  return self:fpath(source) .. ' @ ' .. self:fpath(line) .. ': '
+  return source .. ' @ ' .. line .. ': '
 end
 
 --- @private
@@ -306,7 +194,7 @@ function M:get_test_list(status, count, list, describe)
   local parts = {
     ('%s %s %s, listed below:\n'):format(
       label,
-      self:nmbr(count),
+      count,
       self:summary_header_noun(status, count)
     ),
   }
@@ -316,7 +204,7 @@ function M:get_test_list(status, count, list, describe)
     if status == 'skipped' and self:na_check(item) then
       na_count = na_count + 1
     else
-      local fullname = self:get_file_line(item.trace) .. self:nmbr(item.name)
+      local fullname = self:get_file_line(item.trace) .. item.name
       parts[#parts + 1] = ('%s %s\n'):format(label, fullname)
       parts[#parts + 1] = describe(self, item)
     end
@@ -324,7 +212,7 @@ function M:get_test_list(status, count, list, describe)
 
   if na_count > 0 then
     parts[#parts + 1] =
-      self:nmbr(('%d N/A %s not shown\n'):format(na_count, na_count == 1 and 'test' or 'tests'))
+      (('%d N/A %s not shown\n'):format(na_count, na_count == 1 and 'test' or 'tests'))
   end
 
   return table.concat(parts)
@@ -339,7 +227,7 @@ function M:get_summary(status, count)
     return ''
   end
 
-  return (' %s %s\n'):format(self:nmbr(count), self:summary_footer_noun(status, count))
+  return (' %s %s\n'):format(count, self:summary_footer_noun(status, count))
 end
 
 --- @private
@@ -348,7 +236,7 @@ end
 function M:get_summary_string(summary)
   local tests = summary.success_count == 1 and 'test' or 'tests'
   local parts = {
-    ('%s %s %s.\n'):format(self:succ('PASSED  '), self:nmbr(summary.success_count), tests),
+    ('PASSED %s %s.\n'):format(summary.success_count, tests),
     self:get_test_list('skipped', summary.skipped_count, summary.pendings, M.pending_description),
     self:get_test_list('failure', summary.failure_count, summary.failures, M.failure_description),
     self:get_test_list('error', summary.error_count, summary.errors, M.failure_description),
@@ -371,16 +259,15 @@ function M:suite_start(repeat_index, repeat_count)
   if repeat_count and repeat_count > 1 and repeat_index then
     io.write(('\nRepeating all tests (run %d of %d) . . .\n\n'):format(repeat_index, repeat_count))
   end
-  io.write(('%s Global test environment setup.\n'):format(self:sect('--------')))
+  io.write('-------- Global test environment setup.\n')
   io.flush()
 end
 
 --- @param file test.reporter.FileElement
 function M:file_start(file)
   io.write(
-    ('%s Running tests from %s\n'):format(
-      self:sect('--------'),
-      self:fpath(vim.fs.normalize(file.name))
+    ('-------- Running tests from %s\n'):format(
+      vim.fs.normalize(file.name)
     )
   )
   io.flush()
@@ -389,7 +276,7 @@ end
 --- @param name string
 function M:test_start(name)
   local desc = ('%s %s'):format(_G._nvim_test_id or '', name)
-  io.write(('%s %s: '):format(self:sect('RUN     '), desc))
+  io.write(('RUN      %s: '):format(desc))
   io.flush()
 end
 
@@ -397,7 +284,7 @@ end
 --- @param record { duration?: number }
 --- @param text string
 function M:write_status(record, text)
-  io.write(('%s %s'):format(self:time(('%.2f ms'):format(get_elapsed_time_ms(record))), text))
+  io.write(('%.2f ms %s'):format(get_elapsed_time_ms(record), text))
   io.flush()
 end
 
@@ -415,12 +302,11 @@ end
 --- @param test_count integer
 function M:file_end(file, test_count)
   io.write(
-    ('%s %s %s from %s %s\n\n'):format(
-      self:sect('--------'),
-      self:nmbr(test_count),
+    ('-------- %s %s from %s (%.2f ms total)\n\n'):format(
+      test_count,
       test_count == 1 and 'test' or 'tests',
-      self:fpath(vim.fs.normalize(file.name)),
-      self:time(('(%.2f ms total)'):format(get_elapsed_time_ms(file)))
+      vim.fs.normalize(file.name),
+      get_elapsed_time_ms(file)
     )
   )
   io.flush()
@@ -433,19 +319,18 @@ function M:suite_end(duration, run_summary, failure_output)
   local tests = run_summary.test_count == 1 and 'test' or 'tests'
   local files = run_summary.file_count == 1 and 'file' or 'files'
 
-  io.write(('%s Global test environment teardown.\n'):format(self:sect('--------')))
+  io.write('-------- Global test environment teardown.\n')
   io.flush()
 
   local summary_file = open_summary_file(self.opts.summary_file)
   summary_file:write('\n')
   summary_file:write(
-    ('%s %s %s from %s test %s ran. %s\n'):format(
-      self:sect('========'),
-      self:nmbr(run_summary.test_count),
+    ('======== %s %s from %s test %s ran. (%.2f ms total)\n'):format(
+      run_summary.test_count,
       tests,
-      self:nmbr(run_summary.file_count),
+      run_summary.file_count,
       files,
-      self:time(('(%.2f ms total)'):format(duration * 1000))
+      duration * 1000
     )
   )
   summary_file:write(self:get_summary_string(run_summary))
