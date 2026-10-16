@@ -477,71 +477,6 @@ local function detect_terminal()
   return 'unknown'
 end
 
----@param nvim_version string
-local function check_stable_version(nvim_version)
-  local result = vim
-    .system(
-      { 'git', 'ls-remote', '--tags', 'https://github.com/neovim/neovim' },
-      { text = true, timeout = 5000 }
-    )
-    :wait()
-  if result.code ~= 0 or not result.stdout or result.stdout == '' then
-    return
-  end
-  local stable_sha = assert(
-    result.stdout:match('(%x+)%s+refs/tags/stable%^{}')
-      or result.stdout:match('(%x+)%s+refs/tags/stable\n')
-  )
-  local latest_version =
-    assert(result.stdout:match(stable_sha .. '%s+refs/tags/v?(%d+%.%d+%.%d+)%^{}'))
-  local current_version = assert(nvim_version:match('v?(%d+%.%d+%.%d+)'))
-  local current = vim.version.parse(current_version)
-  local latest = vim.version.parse(latest_version)
-  if current and latest and vim.version.lt(current, latest) then
-    vim.health.warn(('Nvim %s is available (current: %s)'):format(latest_version, current_version))
-  else
-    vim.health.ok(('Up to date (%s)'):format(current_version))
-  end
-end
-
----@param commit string
-local function check_head_hash(commit)
-  local result = vim
-    .system(
-      { 'git', 'ls-remote', 'https://github.com/neovim/neovim', 'HEAD', 'refs/tags/nightly' },
-      { text = true, timeout = 5000 }
-    )
-    :wait()
-  if result.code ~= 0 or not result.stdout or result.stdout == '' then
-    return
-  end
-
-  local refs = {} ---@type table<string, string>
-  for line in result.stdout:gmatch('[^\n]+') do
-    local sha, ref = line:match('^(%x+)%s+(%S+)$')
-    if sha and ref then
-      refs[ref] = sha
-    end
-  end
-
-  local head_sha = assert(refs['HEAD'])
-  local nightly_sha = refs['refs/tags/nightly']
-
-  if vim.startswith(head_sha, commit) then
-    vim.health.ok('Up to date (HEAD)')
-  elseif nightly_sha and vim.startswith(nightly_sha, commit) then
-    vim.health.ok('Up to date (nightly)')
-  else
-    vim.health.warn(
-      ('Build is outdated. Local: %s, HEAD: %s%s'):format(
-        commit,
-        head_sha:sub(1, 12),
-        nightly_sha and (', Nightly: ' .. nightly_sha:sub(1, 12)) or ''
-      )
-    )
-  end
-end
-
 local function check_sysinfo()
   vim.health.start('System Info')
 
@@ -549,14 +484,6 @@ local function check_sysinfo()
   local version_out = vim.api.nvim_exec2('version', { output = true }).output
   local nvim_version = version_out:match('NVIM (v[^\n]+)') or 'unknown'
   local commit --[[@type string]] = (version_out:match('%+g(%x+)') or ''):sub(1, 12)
-
-  if vim.fn.executable('git') ~= 1 then
-    vim.health.warn('Cannot check for updates: git not found')
-  elseif vim.trim(commit) ~= '' then
-    check_head_hash(commit)
-  else
-    check_stable_version(nvim_version)
-  end
 
   local os_info = vim.uv.os_uname()
   local os_string = os_info.sysname .. ' ' .. os_info.release
