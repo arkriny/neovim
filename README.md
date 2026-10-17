@@ -19,7 +19,7 @@ TODO:
 - [x] remove legacy language providers
 - [ ] fix tests leftover files
 - [ ] remove runtime plugins
-- [ ] remove ftplugins and freinds
+- [x] remove ftplugins and freinds
 - [ ] cleanup docs
 - [ ] remove bad suckfull unpredictable hostile behaviors like autousing ripgrep
 - [ ] remove :menu and other stinky Vim featurues
