@@ -243,70 +243,146 @@ pub fn build(b: *std.Build) !void {
         });
     }
 
-    // TODO(arkriny): replace with non-cmake zig equivalent
-    const versiondef_step = b.addConfigHeader(.{
-        .style = .{ .cmake = b.path("cmake.config/versiondef.h.in") },
-    }, .{
-        .NVIM_VERSION_MAJOR = version.major,
-        .NVIM_VERSION_MINOR = version.minor,
-        .NVIM_VERSION_PATCH = version.patch,
-        .NVIM_VERSION_PRERELEASE = version.prerelease,
-        .NVIM_VERSION_MEDIUM = "",
-        .VERSION_STRING = "TODO", // TODO(bfredl): not sure what to put here. summary already in "config_str"
-        .CONFIG = config_str,
-    });
-    _ = gen_config.addCopyFile(versiondef_step.getOutput(), "auto/versiondef.h"); // run_preprocessor() workaronnd
+    // auto/versiondef.h was previously generated from cmake.config/versiondef.h.in.
+    _ = gen_config.add("auto/versiondef.h", b.fmt(
+        \\#ifndef AUTO_VERSIONDEF_H
+        \\#define AUTO_VERSIONDEF_H
+        \\
+        \\#define NVIM_VERSION_MAJOR {d}
+        \\#define NVIM_VERSION_MINOR {d}
+        \\#define NVIM_VERSION_PATCH {d}
+        \\#define NVIM_VERSION_PRERELEASE "{s}"
+        \\
+        \\#undef NVIM_VERSION_MEDIUM
+        \\#ifndef NVIM_VERSION_MEDIUM
+        \\# include "auto/versiondef_git.h"
+        \\#endif
+        \\
+        \\#define NVIM_VERSION_CFLAGS "{s}"
+        \\#ifdef ZIG_BUILD
+        \\# define NVIM_VERSION_BUILD_TYPE "{s}"
+        \\#else
+        \\# define NVIM_VERSION_BUILD_TYPE "$<CONFIG>"
+        \\#endif
+        \\
+        \\#endif  // AUTO_VERSIONDEF_H
+    , .{
+        version.major,
+        version.minor,
+        version.patch,
+        version.prerelease,
+        "TODO",
+        config_str,
+    }));
 
     const ptrwidth = t.ptrBitWidth() / 8;
-    const sysconfig_step = b.addConfigHeader(.{
-        .style = .{ .cmake = b.path("cmake.config/config.h.in") },
-    }, .{
-        .SIZEOF_INT = t.cTypeByteSize(.int),
-        .SIZEOF_INTMAX_T = t.cTypeByteSize(.longlong), // TODO
-        .SIZEOF_LONG = t.cTypeByteSize(.long),
-        .SIZEOF_SIZE_T = ptrwidth,
-        .SIZEOF_VOID_PTR = ptrwidth,
 
-        .PROJECT_NAME = "nvim",
-
-        .HAVE__NSGETENVIRON = is_darwin,
-        .HAVE_FD_CLOEXEC = modern_unix,
-        .HAVE_FSEEKO = modern_unix,
-        .HAVE_LANGINFO_H = modern_unix,
-        .HAVE_NL_LANGINFO_CODESET = modern_unix,
-        .HAVE_PWD_FUNCS = modern_unix,
-        .HAVE_READLINK = modern_unix,
-        .HAVE_STRNLEN = modern_unix,
-        .HAVE_STRCASECMP = modern_unix,
-        .HAVE_STRINGS_H = modern_unix,
-        .HAVE_STRNCASECMP = modern_unix,
-        .HAVE_STRPTIME = modern_unix,
-        .HAVE_XATTR = is_linux,
-        .HAVE_SYS_SDT_H = false,
-        .HAVE_SYS_UTSNAME_H = modern_unix,
-        .HAVE_SYS_WAIT_H = false, // unused
-        .HAVE_TERMIOS_H = modern_unix,
-        .UNIX = modern_unix,
-        .CASE_INSENSITIVE_FILENAME = is_darwin or is_windows,
-        .HAVE_SYS_UIO_H = modern_unix,
-        .HAVE_READV = modern_unix,
-        .HAVE_DIRFD_AND_FLOCK = modern_unix,
-        .HAVE_FORKPTY = modern_unix and !is_darwin, // also on Darwin but we lack the headers :(
-        .HAVE_BE64TOH = modern_unix and !is_darwin,
-        .ORDER_BIG_ENDIAN = t.cpu.arch.endian() == .big,
-        .ENDIAN_INCLUDE_FILE = "endian.h",
-        .HAVE_EXECINFO_BACKTRACE = modern_unix and !t.isMuslLibC(),
-        .HAVE_BUILTIN_ADD_OVERFLOW = true,
-        .HAVE_WIMPLICIT_FALLTHROUGH_FLAG = true,
-        .HAVE_BITSCANFORWARD64 = null,
-
-        .VTERM_TEST_FILE = "test/vterm_test_output", // TODO(bfredl): revisit when porting libvterm tests
+    // auto/config.h was previously generated from cmake.config/config.h.in.
+    // Zig's b.fmt supports max 32 format args, so generate in two parts.
+    const config_part1 = b.fmt(
+        \\#pragma once
+        \\
+        \\#define SIZEOF_INT {d}
+        \\#define SIZEOF_INTMAX_T {d}
+        \\#define SIZEOF_LONG {d}
+        \\#define SIZEOF_SIZE_T {d}
+        \\#define SIZEOF_VOID_PTR {d}
+        \\
+        \\#if {d} == 8
+        \\#define ARCH_64
+        \\#elif {d} == 4
+        \\#define ARCH_32
+        \\#endif
+        \\
+        \\#define PROJECT_NAME "{s}"
+        \\
+    , .{
+        t.cTypeByteSize(.int),
+        t.cTypeByteSize(.longlong), // TODO
+        t.cTypeByteSize(.long),
+        ptrwidth,
+        ptrwidth,
+        ptrwidth,
+        ptrwidth,
+        "nvim",
     });
+
+    const config_part2 = b.fmt(
+        \\{s}  // HAVE__NSGETENVIRON
+        \\{s}  // HAVE_FD_CLOEXEC
+        \\{s}  // HAVE_FSEEKO
+        \\{s}  // HAVE_LANGINFO_H
+        \\{s}  // HAVE_NL_LANGINFO_CODESET
+        \\{s}  // HAVE_PWD_FUNCS
+        \\{s}  // HAVE_READLINK
+        \\{s}  // HAVE_STRNLEN
+        \\{s}  // HAVE_STRCASECMP
+        \\{s}  // HAVE_STRINGS_H
+        \\{s}  // HAVE_STRNCASECMP
+        \\{s}  // HAVE_STRPTIME
+        \\{s}  // HAVE_XATTR
+        \\{s}  // HAVE_SYS_SDT_H
+        \\{s}  // HAVE_SYS_UTSNAME_H
+        \\{s}  // HAVE_SYS_WAIT_H
+        \\{s}  // HAVE_TERMIOS_H
+        \\{s}  // UNIX
+        \\{s}  // CASE_INSENSITIVE_FILENAME
+        \\{s}  // HAVE_SYS_UIO_H
+        \\#ifdef HAVE_SYS_UIO_H
+        \\{s}  // HAVE_READV
+        \\#ifndef HAVE_READV
+        \\#  undef HAVE_SYS_UIO_H
+        \\#endif
+        \\#endif
+        \\{s}  // HAVE_DIRFD_AND_FLOCK
+        \\{s}  // HAVE_FORKPTY
+        \\
+        \\{s}  // HAVE_BE64TOH
+        \\{s}  // ORDER_BIG_ENDIAN
+        \\#define ENDIAN_INCLUDE_FILE <{s}>
+        \\
+        \\{s}  // HAVE_EXECINFO_BACKTRACE
+        \\#define HAVE_BUILTIN_ADD_OVERFLOW
+        \\#define HAVE_WIMPLICIT_FALLTHROUGH_FLAG
+        \\#undef HAVE_BITSCANFORWARD64
+        \\
+        \\#define VTERM_TEST_FILE "{s}"
+    , .{
+        cmakedefine(b, "HAVE__NSGETENVIRON", is_darwin),
+        cmakedefine(b, "HAVE_FD_CLOEXEC", modern_unix),
+        cmakedefine(b, "HAVE_FSEEKO", modern_unix),
+        cmakedefine(b, "HAVE_LANGINFO_H", modern_unix),
+        cmakedefine(b, "HAVE_NL_LANGINFO_CODESET", modern_unix),
+        cmakedefine(b, "HAVE_PWD_FUNCS", modern_unix),
+        cmakedefine(b, "HAVE_READLINK", modern_unix),
+        cmakedefine(b, "HAVE_STRNLEN", modern_unix),
+        cmakedefine(b, "HAVE_STRCASECMP", modern_unix),
+        cmakedefine(b, "HAVE_STRINGS_H", modern_unix),
+        cmakedefine(b, "HAVE_STRNCASECMP", modern_unix),
+        cmakedefine(b, "HAVE_STRPTIME", modern_unix),
+        cmakedefine(b, "HAVE_XATTR", is_linux),
+        cmakedefine(b, "HAVE_SYS_SDT_H", false),
+        cmakedefine(b, "HAVE_SYS_UTSNAME_H", modern_unix),
+        cmakedefine(b, "HAVE_SYS_WAIT_H", false), // unused
+        cmakedefine(b, "HAVE_TERMIOS_H", modern_unix),
+        cmakedefine(b, "UNIX", modern_unix),
+        cmakedefine(b, "CASE_INSENSITIVE_FILENAME", is_darwin or is_windows),
+        cmakedefine(b, "HAVE_SYS_UIO_H", modern_unix),
+        cmakedefine(b, "HAVE_READV", modern_unix),
+        cmakedefine(b, "HAVE_DIRFD_AND_FLOCK", modern_unix),
+        cmakedefine(b, "HAVE_FORKPTY", modern_unix and !is_darwin), // also on Darwin but we lack the headers :(
+        cmakedefine(b, "HAVE_BE64TOH", modern_unix and !is_darwin),
+        cmakedefine(b, "ORDER_BIG_ENDIAN", t.cpu.arch.endian() == .big),
+        "endian.h",
+        cmakedefine(b, "HAVE_EXECINFO_BACKTRACE", modern_unix and !t.isMuslLibC()),
+        "test/vterm_test_output", // TODO(bfredl): revisit when porting libvterm tests
+    });
+
+    _ = gen_config.add("auto/config.h", b.fmt("{s}{s}", .{config_part1, config_part2}));
 
     const system_install_path = b.option([]const u8, "install-path", "Install path (for packagers)");
     const install_path = system_install_path orelse b.install_path;
     const lib_dir = if (system_install_path) |path| b.fmt("{s}/lib", .{path}) else b.lib_dir;
-    _ = gen_config.addCopyFile(sysconfig_step.getOutput(), "auto/config.h"); // run_preprocessor() workaronnd
 
     _ = gen_config.add("auto/pathdef.h", b.fmt(
         \\char *default_vim_dir = "{s}/share/nvim";
@@ -769,6 +845,13 @@ pub fn lua_version_info(b: *std.Build) []u8 {
         v.api_level_compat,
         v.api_prerelease,
     });
+}
+
+/// Replicate CMake `#cmakedefine` semantics without cmake: `#define NAME` when the
+/// condition holds, `#undef NAME` otherwise. Returned memory is stored in `b.graph.arena`.
+fn cmakedefine(b: *std.Build, name: []const u8, cond: bool) []const u8 {
+    const prefix = if (cond) "#define " else "#undef ";
+    return b.fmt("{s}{s}", .{prefix, name});
 }
 
 /// Replace all backslashes in `input` with with forward slashes when the target is Windows.
