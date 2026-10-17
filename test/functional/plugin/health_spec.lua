@@ -81,14 +81,6 @@ describe(':checkhealth', function()
     ]])
     )
     matches('health%.lua:%d+>$', fn.maparg('q', 'n', false, false))
-
-    -- gO should not close the :checkhealth floating window. #34784
-    command('checkhealth full_render')
-    local win = api.nvim_get_current_win()
-    api.nvim_win_set_cursor(win, { 5, 1 })
-    n.feed('gO')
-    eq(true, api.nvim_win_is_valid(win))
-    eq('qf', api.nvim_get_option_value('filetype', { buf = 0 }))
   end)
 
   it("vim.provider works with a misconfigured 'shell'", function()

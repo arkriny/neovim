@@ -20,15 +20,6 @@ PARSER FILES                                              *treesitter-parsers*
 Parsers are the heart of treesitter. They are libraries that treesitter will
 search for in the `parser` runtime directory.
 
-Nvim includes these parsers:
-
-- C
-- Lua
-- Markdown
-- Vimscript
-- Vimdoc
-- Treesitter query files |ft-query-plugin|
-
 You can install more parsers manually, or with a plugin like
 https://github.com/nvim-treesitter/nvim-treesitter .
 

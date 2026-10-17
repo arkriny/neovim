@@ -266,17 +266,6 @@ describe(':TOhtml', function()
     run_tohtml_and_assert(screen)
   end)
 
-  it('treesitter', function()
-    insert [[
-    function main()
-      print("hello world")
-    end
-    ]]
-    exec('setf lua')
-    exec_lua('vim.treesitter.start()')
-    run_tohtml_and_assert(screen)
-  end)
-
   it('matchadd', function()
     insert [[
     line

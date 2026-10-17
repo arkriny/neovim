@@ -6,38 +6,6 @@ local M = {}
 
 -- TODO(clason): use runtimepath queries (for other languages)
 local heading_queries = {
-  vimdoc = [[
-    (h1 (heading) @h1)
-    (h2 (heading) @h2)
-    (h3 (heading) @h3)
-    (column_heading (heading) @h4)
-  ]],
-  markdown = [[
-    (setext_heading
-      heading_content: (_) @h1
-      (setext_h1_underline))
-    (setext_heading
-      heading_content: (_) @h2
-      (setext_h2_underline))
-    (atx_heading
-      (atx_h1_marker)
-      heading_content: (_) @h1)
-    (atx_heading
-      (atx_h2_marker)
-      heading_content: (_) @h2)
-    (atx_heading
-      (atx_h3_marker)
-      heading_content: (_) @h3)
-    (atx_heading
-      (atx_h4_marker)
-      heading_content: (_) @h4)
-    (atx_heading
-      (atx_h5_marker)
-      heading_content: (_) @h5)
-    (atx_heading
-      (atx_h6_marker)
-      heading_content: (_) @h6)
-  ]],
 }
 
 ---@class TS.Heading

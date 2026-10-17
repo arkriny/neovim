@@ -1095,94 +1095,6 @@ local function find_window_by_var(name, value)
   end
 end
 
----Returns true if the line is empty or only contains whitespace.
----@param line string
----@return boolean
-local function is_blank_line(line)
-  return line and line:match('^%s*$')
-end
-
----Returns true if the line corresponds to a Markdown thematic break.
----@see https://github.github.com/gfm/#thematic-break
----@param line string
----@return boolean
-local function is_separator_line(line)
-  local i = 1
-  -- 1. Skip up to 3 leading spaces
-  local leading_spaces = 3
-  while i <= #line and line:byte(i) == string.byte(' ') and leading_spaces > 0 do
-    i = i + 1
-    leading_spaces = leading_spaces - 1
-  end
-  -- 2. Determine the delimiter character
-  local delimiter = line:byte(i) -- nil if i > #line
-  if
-    delimiter ~= string.byte('-')
-    and delimiter ~= string.byte('_')
-    and delimiter ~= string.byte('*')
-  then
-    return false
-  end
-  local ndelimiters = 1
-  i = i + 1
-  -- 3. Iterate until found non-whitespace or other than expected delimiter
-  while i <= #line do
-    local char = line:byte(i)
-    if char == delimiter then
-      ndelimiters = ndelimiters + 1
-    elseif not (char == string.byte(' ') or char == string.byte('\t')) then
-      return false
-    end
-    i = i + 1
-  end
-  return ndelimiters >= 3
-end
-
----Replaces separator lines by the given divider and removing surrounding blank lines.
----@param contents string[]
----@param divider string
----@return string[]
-local function replace_separators(contents, divider)
-  local trimmed = {}
-  local l = 1
-  while l <= #contents do
-    local line = contents[l]
-    if is_separator_line(line) then
-      if l > 1 and is_blank_line(contents[l - 1]) then
-        table.remove(trimmed)
-      end
-      table.insert(trimmed, divider)
-      if is_blank_line(contents[l + 1]) then
-        l = l + 1
-      end
-    else
-      table.insert(trimmed, line)
-    end
-    l = l + 1
-  end
-
-  return trimmed
-end
-
----Collapses successive blank lines in the input table into a single one.
----@param contents string[]
----@return string[]
-local function collapse_blank_lines(contents)
-  local collapsed = {}
-  local l = 1
-  while l <= #contents do
-    local line = contents[l]
-    if is_blank_line(line) then
-      while is_blank_line(contents[l + 1]) do
-        l = l + 1
-      end
-    end
-    table.insert(collapsed, line)
-    l = l + 1
-  end
-  return collapsed
-end
-
 local function get_markdown_fences()
   local fences = {} --- @type table<string,string>
   for _, fence in
@@ -1398,43 +1310,6 @@ function M.stylize_markdown(bufnr, contents, opts)
   end)
 
   return stripped
-end
-
---- @class (private) vim.lsp.util._normalize_markdown.Opts
---- @field width integer Thematic breaks are expanded to this size. Defaults to 80.
-
---- Normalizes Markdown input to a canonical form.
----
---- The returned Markdown adheres to the GitHub Flavored Markdown (GFM)
---- specification, as required by the LSP.
----
---- The following transformations are made:
----
----   1. Carriage returns ('\r') and empty lines at the beginning and end are removed
----   2. Successive empty lines are collapsed into a single empty line
----   3. Thematic breaks are expanded to the given width
----
----@param contents string[]
----@param opts? vim.lsp.util._normalize_markdown.Opts
----@return string[] table of lines containing normalized Markdown
----@see https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#markupContent
----@see https://github.github.com/gfm
-function M._normalize_markdown(contents, opts)
-  validate('contents', contents, 'table')
-  validate('opts', opts, 'table', true)
-  opts = opts or {}
-
-  -- 1. Carriage returns are removed
-  contents = vim.split(table.concat(contents, '\n'):gsub('\r', ''), '\n', { trimempty = true })
-
-  -- 2. Successive empty lines are collapsed into a single empty line
-  contents = collapse_blank_lines(contents)
-
-  -- 3. Thematic breaks are expanded to the given width
-  local divider = string.rep('─', opts.width or 80)
-  contents = replace_separators(contents, divider)
-
-  return contents
 end
 
 --- Closes the preview window
@@ -1685,20 +1560,8 @@ function M.open_floating_preview(contents, syntax, opts)
     floating_bufnr = api.nvim_create_buf(false, true)
   end
 
-  -- Set up the contents, using treesitter for markdown
-  local do_stylize = syntax == 'markdown' and vim.g.syntax_on ~= nil
-
-  if do_stylize then
-    local width = M._make_floating_popup_size(contents, opts)
-    contents = M._normalize_markdown(contents, { width = width })
-  else
-    -- Clean up input: trim empty lines
-    contents = vim.split(table.concat(contents, '\n'), '\n', { trimempty = true })
-
-    if syntax then
-      vim.bo[floating_bufnr].syntax = syntax
-    end
-  end
+  -- Clean up input: trim empty lines
+  contents = vim.split(table.concat(contents, '\n'), '\n', { trimempty = true })
 
   vim.bo[floating_bufnr].modifiable = true
   api.nvim_buf_set_lines(floating_bufnr, 0, -1, false, contents)
@@ -1765,21 +1628,6 @@ function M.open_floating_preview(contents, syntax, opts)
 
   vim.bo[floating_bufnr].modifiable = false
   vim.bo[floating_bufnr].bufhidden = 'wipe'
-
-  if do_stylize then
-    vim.wo[floating_winnr].conceallevel = 2
-    vim.wo[floating_winnr].concealcursor = ''
-    vim.bo[floating_bufnr].filetype = 'markdown'
-    vim.treesitter.start(floating_bufnr)
-    if not opts.height then
-      -- Reduce window height if TS highlighter conceals code block backticks.
-      local win_height = api.nvim_win_get_height(floating_winnr)
-      local text_height = api.nvim_win_text_height(floating_winnr, { max_height = win_height }).all
-      if text_height < win_height then
-        api.nvim_win_set_height(floating_winnr, text_height)
-      end
-    end
-  end
 
   return floating_bufnr, floating_winnr
 end
