@@ -9,9 +9,29 @@ local root = t.paths.test_source_path
 local build_dir = t.paths.test_build_dir
 local nvim_prog = build_dir .. '/bin/nvim'
 local runner = root .. '/test/runner.lua'
+local tmpdir = os.getenv('TMPDIR')
+
+--- Remove temporary paths left by previous runs, which reuse the same names.
+local function cleanup_tmpdir()
+  if not tmpdir or not uv.fs_stat(tmpdir) then
+    return
+  end
+  local names = {}
+  for name in vim.fs.dir(tmpdir) do
+    if name:match('^nvim%-test%.') then
+      names[#names + 1] = name
+    end
+  end
+  for _, name in ipairs(names) do
+    pcall(vim.fs.rm, tmpdir .. '/' .. name, { recursive = true, force = true })
+  end
+end
 
 ---@param path string
 local function mkdir(path)
+  if uv.fs_stat(path) then
+    pcall(vim.fs.rm, path, { recursive = true, force = true })
+  end
   assert(t.mkdir(path), ('failed to create directory: %s'):format(path))
 end
 
@@ -135,6 +155,9 @@ local function assert_harness_passes(suite_dir, extra_args)
 end
 
 describe('test harness', function()
+  before_each(cleanup_tmpdir)
+  after_each(cleanup_tmpdir)
+
   it('restores package.preload between files', function()
     local suite_dir = write_suite({
       ['one_spec.lua'] = [[

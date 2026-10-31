@@ -20,21 +20,12 @@ PARSER FILES                                              *treesitter-parsers*
 Parsers are the heart of treesitter. They are libraries that treesitter will
 search for in the `parser` runtime directory.
 
-Nvim includes these parsers:
-
-- C
-- Lua
-- Markdown
-- Vimscript
-- Vimdoc
-- Treesitter query files |ft-query-plugin|
-
 You can install more parsers manually, or with a plugin like
 https://github.com/nvim-treesitter/nvim-treesitter .
 
 Parsers are searched for as `parser/{lang}.*` in any 'runtimepath' directory.
 If multiple parsers for the same language are found, the first one is used.
-(NOTE: This typically implies the priority "user config > plugins > bundled".)
+(NOTE: This typically implies the priority "user config > plugins".)
 
 To load a parser from its filepath: >lua
 
@@ -77,9 +68,9 @@ Nvim looks for queries as `*.scm` files in a `queries` directory under
 `runtimepath`, where each file contains queries for a specific language and
 purpose, e.g., `queries/lua/highlights.scm` for highlighting Lua files.
 By default, the first query on `runtimepath` is used (which usually implies
-that user config takes precedence over plugins, which take precedence over
-queries bundled with Nvim). If a query should extend other queries instead
-of replacing them, use |treesitter-query-modeline-extends|.
+that user config takes precedence over plugins). If a query should extend
+other queries instead of replacing them, use
+|treesitter-query-modeline-extends|.
 
 The Lua interface is described at |lua-treesitter-query|.
 

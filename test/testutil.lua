@@ -432,7 +432,7 @@ end
 --- @return string
 function M.tmpname(create)
   local fname = get_tmpname()
-  os.remove(fname)
+  vim.fs.rm(fname, { recursive = true, force = true })
   if create ~= false then
     assert(io.open(fname, 'w')):close()
   end

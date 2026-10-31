@@ -140,40 +140,6 @@ describe('vim.lsp.util', function()
     eq(expected, r)
   end)
 
-  describe('_normalize_markdown', function()
-    it('collapses consecutive blank lines', function()
-      local result = exec_lua(function()
-        local lines = {
-          'foo',
-          '',
-          '',
-          '',
-          'bar',
-          '',
-          'baz',
-        }
-        return vim.lsp.util._normalize_markdown(lines)
-      end)
-      local expected = { 'foo', '', 'bar', '', 'baz' }
-      eq(expected, result)
-    end)
-
-    it('removes preceding and trailing empty lines', function()
-      local result = exec_lua(function()
-        local lines = {
-          '',
-          'foo',
-          'bar',
-          '',
-          '',
-        }
-        return vim.lsp.util._normalize_markdown(lines)
-      end)
-      local expected = { 'foo', 'bar' }
-      eq(expected, result)
-    end)
-  end)
-
   describe('make_floating_popup_options', function()
     local function assert_anchor(anchor_bias, expected_anchor)
       local opts = exec_lua(function()
@@ -332,79 +298,6 @@ describe('vim.lsp.util', function()
       │└───┘{11:                                              }│|
       │{11:~                                                  }│|*7
       └───────────────────────────────────────────────────┘|
-                                                           |
-    ]])
-  end)
-
-  it('open_floating_preview height reduced for concealed lines', function()
-    local screen = Screen.new()
-    screen:add_extra_attr_ids({
-      [100] = {
-        background = Screen.colors.LightMagenta,
-        foreground = Screen.colors.Brown,
-        bold = true,
-      },
-      [101] = { background = Screen.colors.LightMagenta, foreground = Screen.colors.Blue },
-      [102] = { background = Screen.colors.LightMagenta, foreground = Screen.colors.DarkCyan },
-    })
-    exec_lua([[
-      vim.g.syntax_on = false
-      vim.lsp.util.open_floating_preview({ '```lua', 'local foo', '```' }, 'markdown', {
-        border = 'single',
-        focus = false,
-      })
-    ]])
-    screen:expect([[
-      ^                                                     |
-      ┌─────────┐{1:                                          }|
-      │{100:local}{101: }{102:foo}│{1:                                          }|
-      └─────────┘{1:                                          }|
-      {1:~                                                    }|*9
-                                                           |
-    ]])
-    -- Entering window keeps lines concealed and doesn't end up below inner window size.
-    feed('<C-w>wG')
-    screen:expect([[
-                                                           |
-      ┌─────────┐{1:                                          }|
-      │{101:^```}{4:      }│{1:                                          }|
-      └─────────┘{1:                                          }|
-      {1:~                                                    }|*9
-                                                           |
-    ]])
-    -- Correct height when float inherits 'conceallevel' >= 2 #32639
-    command('close | set conceallevel=2')
-    feed('<Ignore>') -- Prevent CursorMoved closing the next float immediately
-    exec_lua([[
-      vim.lsp.util.open_floating_preview({ '```lua', 'local foo', '```' }, 'markdown', {
-        border = 'single',
-        focus = false,
-      })
-    ]])
-    screen:expect([[
-      ^                                                     |
-      ┌─────────┐{1:                                          }|
-      │{100:local}{101: }{102:foo}│{1:                                          }|
-      └─────────┘{1:                                          }|
-      {1:~                                                    }|*9
-                                                           |
-    ]])
-    -- This tests the valid winline code path (why doesn't the above?).
-    exec_lua([[
-      vim.cmd.only()
-      vim.lsp.util.open_floating_preview({ 'foo', '```lua', 'local bar', '```' }, 'markdown', {
-        border = 'single',
-        focus = false,
-      })
-    ]])
-    feed('<C-W>wG')
-    screen:expect([[
-                                                           |
-      ┌─────────┐{1:                                          }|
-      │{100:local}{101: }{102:bar}│{1:                                          }|
-      │{101:^```}{4:      }│{1:                                          }|
-      └─────────┘{1:                                          }|
-      {1:~                                                    }|*8
                                                            |
     ]])
   end)

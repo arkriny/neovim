@@ -23,7 +23,7 @@ TODO:
 - [ ] cleanup docs
 - [ ] remove bad suckfull unpredictable hostile behaviors like autousing ripgrep
 - [ ] remove :menu and other stinky Vim featurues
-- [ ] remove pre-shipped tree-sitter parsers (hopefully)
+- [x] remove pre-shipped tree-sitter parsers
 - [ ] sane defaults
 - [ ] try to remove vimscript
 - [ ] make testsuite run less than 10 minutes on 2026 laptop

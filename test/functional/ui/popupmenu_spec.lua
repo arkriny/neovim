@@ -1766,7 +1766,6 @@ describe('builtin popupmenu', function()
             let comp_info = complete_info(['selected'])
             if comp_info['selected'] == 0
               let windata = nvim__complete_set(comp_info['selected'], {"info": "```lua\nfunction test()\n  print('foo')\nend\n```"})
-              call v:lua.vim.treesitter.start(windata['bufnr'], 'markdown')
               if g:reduce_info_height > 0
                 let h = v:lua.vim.api.nvim_win_text_height(windata['winid'], {}).all
                 if h > 3
@@ -1994,93 +1993,6 @@ describe('builtin popupmenu', function()
           ]])
         end
         feed('<C-E><Esc>')
-      end)
-
-      it('works when scroll with treesitter highlight', function()
-        command('call TestTs()')
-        feed('S<C-x><C-o>')
-        if multigrid then
-          screen:expect({
-            grid = [[
-            ## grid 1
-              [2:----------------------------------------]|*10
-              [3:----------------------------------------]|
-            ## grid 2
-              one^                                     |
-              {1:~                                       }|*9
-            ## grid 3
-              {5:-- }{6:match 1 of 3}                         |
-            ## grid 4
-              {mn:```}{102:lua}{n:         }|
-              {102:function}{mn: }{103:test}{104:()}|
-              {mn:  }{104:print(}{105:'foo'}{104:)}{n: }|
-              {102:end}{n:            }|
-              {mn:```}{n:            }|
-            ## grid 5
-              {12:one                }|
-              {n:two                }|
-              {n:looooooooooooooong }|
-            ]],
-            win_pos = { [2] = { height = 10, startcol = 0, startrow = 0, width = 40, win = 1000 } },
-            float_pos = {
-              [5] = { -1, 'NW', 2, 1, 0, false, 100, 2, 1, 0 },
-              [4] = { 1001, 'NW', 1, 1, 19, true, 50, 1, 1, 19 },
-            },
-          })
-        else
-          screen:expect([[
-            one^                                     |
-            {12:one                }{mn:```}{102:lua}{n:         }{1:      }|
-            {n:two                }{102:function}{mn: }{103:test}{104:()}{1:      }|
-            {n:looooooooooooooong }{mn:  }{104:print(}{105:'foo'}{104:)}{n: }{1:      }|
-            {1:~                  }{102:end}{n:            }{1:      }|
-            {1:~                  }{mn:```}{n:            }{1:      }|
-            {1:~                                       }|*4
-            {5:-- }{6:match 1 of 3}                         |
-          ]])
-        end
-      end)
-
-      it('info window aligns with pum when above cursor', function()
-        command('let g:reduce_info_height=1 | call TestTs()')
-        feed('<C-E><ESC>18o<Esc>i<C-x><C-O>')
-        if multigrid then
-          screen:expect({
-            grid = [[
-            ## grid 1
-              [2:----------------------------------------]|*10
-              [3:----------------------------------------]|
-            ## grid 2
-                                                      |*9
-              one^                                     |
-            ## grid 3
-              {5:-- }{6:match 1 of 3}                         |
-            ## grid 4
-              {mn:```}{102:lua}{n:         }|
-              {102:function}{mn: }{103:test}{104:()}|
-            ## grid 5
-              {12:one                }|
-              {n:two                }|
-              {n:looooooooooooooong }|
-            ]],
-            win_pos = {
-              [2] = { height = 10, startcol = 0, startrow = 0, width = 40, win = 1000 },
-            },
-            float_pos = {
-              [5] = { -1, 'SW', 2, 9, 0, false, 100, 2, 6, 0 },
-              [4] = { 1001, 'NW', 1, 6, 19, true, 50, 1, 6, 19 },
-            },
-          })
-        else
-          screen:expect([[
-                                                    |*6
-            {12:one                }{mn:```}{102:lua}{n:         }      |
-            {n:two                }{102:function}{mn: }{103:test}{104:()}      |
-            {n:looooooooooooooong }                     |
-            one^                                     |
-            {5:-- }{6:match 1 of 3}                         |
-          ]])
-        end
       end)
 
       it('avoid modified original info text', function()

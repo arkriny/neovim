@@ -36,7 +36,6 @@ M.nvim_argv = {
   'NONE',
   '-i',
   'NONE',
-  -- XXX: find treesitter parsers.
   '--cmd',
   M.runtime_set,
   '--cmd',

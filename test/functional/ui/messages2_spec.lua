@@ -228,7 +228,7 @@ describe('messages2', function()
       {3:                                                     }|
       foo                                                  |*11
       {3:[Pager]                            1,1            Top}|
-      {16::}^                                                    |
+      :^                                                    |
     ]])
     -- Can enter pager from cmdwin.
     feed('<Esc>qq:')
@@ -371,7 +371,7 @@ describe('messages2', function()
                                                            |
       {1:~                                                    }|*10
       {1:~                                                 }{4:foo}|
-      {16::}^                                                    |
+      :^                                                    |
     ]])
     -- Highlighter disabled when message is moved to cmdline #34884
     feed([[echo "bar\n"->repeat(&lines)<CR>]])
@@ -447,14 +447,14 @@ describe('messages2', function()
       {3:                                                     }|
       foo                                                  |*6
       foo [+8]                                             |
-      {16::}{15:call} {25:setline}{16:(}{26:1}{16:,} {26:"foo"}{16:)}^                              |
+      :call setline(1, "foo")^                              |
     ]])
     -- No message closes expanded cmdline and keeps the entered command.
     feed('<CR>')
     screen:expect([[
       ^foo                                                  |
       {1:~                                                    }|*12
-      {16::}{15:call} {25:setline}{16:(}{26:1}{16:,} {26:"foo"}{16:)}                              |
+      :call setline(1, "foo")                              |
     ]])
     -- If command emits another message we enter the pager to closely mimic useful UI1 behavior.
     command('echo "foo\nbar"')
@@ -466,7 +466,7 @@ describe('messages2', function()
       foo                                                  |
       bar                                                  |
       ^baz                                                  |
-      {16::}{15:echo} {26:"baz"}                                          |
+      :echo "baz"                                          |
     ]])
     -- Subsequent typed commands are appended to the pager.
     feed(':echo "typed append"<CR>')
@@ -478,7 +478,7 @@ describe('messages2', function()
       bar                                                  |
       baz                                                  |
       ^typed append                                         |
-      {16::}{15:echo} {26:"typed append"}                                 |
+      :echo "typed append"                                 |
     ]])
     -- Other messages that fit 'cmdheight' are not.
     feed('n')
@@ -891,7 +891,7 @@ describe('messages2', function()
       {9:stack traceback:}                                     |
       {9:        [C]: in function 'error'}                     |
       {9:        [string ":lua"]:1: in main chunk}             |
-      {16::}{15:echo} {26:"bar"}^                                          |
+      :echo "bar"^                                          |
     ]])
     feed('<CR>')
     screen:expect([[
@@ -908,7 +908,7 @@ describe('messages2', function()
       {1:~            }{9:stack traceback:}{4:                        }|
       {1:~            }{9:        [C]: in function 'error'}{4:        }|
       {1:~            }{9:        [string ":lua"]:1: in main chunk}|
-      {16::}{15:call} {25:confirm}{16:(}{26:"foo\nbar"}{16:)}^                            |
+      :call confirm("foo\nbar")^                            |
     ]])
     feed('<CR>')
     screen:expect([[

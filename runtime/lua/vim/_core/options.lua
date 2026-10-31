@@ -898,7 +898,7 @@ function Option:get() end
 --- vim.opt.formatoptions = vim.opt.formatoptions + 'j'
 --- ```
 ---@param value string Value to append
----@diagnostic disable-next-line:unused-local used for gen_vimdoc
+---@diagnostic disable-next-line:unused-local
 function Option:append(value) end -- luacheck: no unused
 
 --- Prepend a value to string-style options. See |:set^=|
@@ -910,7 +910,7 @@ function Option:append(value) end -- luacheck: no unused
 --- vim.opt.wildignore = vim.opt.wildignore ^ '*.o'
 --- ```
 ---@param value string Value to prepend
----@diagnostic disable-next-line:unused-local used for gen_vimdoc
+---@diagnostic disable-next-line:unused-local
 function Option:prepend(value) end -- luacheck: no unused
 
 --- Remove a value from string-style options. See |:set-=|
@@ -922,7 +922,7 @@ function Option:prepend(value) end -- luacheck: no unused
 --- vim.opt.wildignore = vim.opt.wildignore - '*.pyc'
 --- ```
 ---@param value string Value to remove
----@diagnostic disable-next-line:unused-local used for gen_vimdoc
+---@diagnostic disable-next-line:unused-local
 function Option:remove(value) end -- luacheck: no unused
 
 --- @nodoc
