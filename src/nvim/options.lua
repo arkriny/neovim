@@ -5064,8 +5064,8 @@ local options = {
       defaults = {
         condition = 'MSWIN',
         if_true = ':help!',
-        if_false = ':Man',
-        doc = '":Man", Windows: ":help"',
+        if_false = ':help',
+        doc = '":help", Windows: ":help!"',
       },
       desc = [=[
         Program to use for the |K| command.  Environment variables are
@@ -5078,14 +5078,12 @@ local options = {
         - ":help!" performs |:help!| (DWIM) on the |WORD| at cursor.
         - If the value starts with ":", it is invoked as an Ex command
           prefixed with [count].
-        - If "man" or "man -s", [count] is the manpage section number.
 
         See |option-backslash| about including spaces and backslashes.
 
         Example: >vim
         	set keywordprg=:help!
-        	set keywordprg=man\ -s
-        	set keywordprg=:Man
+        	set keywordprg=:help
         <
         This option cannot be set from a |modeline| or in the |sandbox|, for
         security reasons.

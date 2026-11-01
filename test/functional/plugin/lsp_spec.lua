@@ -513,12 +513,13 @@ describe('LSP', function()
             vim.api.nvim_command('filetype plugin on')
             BUFFER_1 = vim.api.nvim_create_buf(false, true)
             BUFFER_2 = vim.api.nvim_create_buf(false, true)
-            vim.api.nvim_set_option_value('filetype', 'man', { buf = BUFFER_1 })
+            vim.api.nvim_set_option_value('filetype', 'xml', { buf = BUFFER_1 })
             vim.api.nvim_set_option_value('filetype', 'xml', { buf = BUFFER_2 })
           end)
 
           -- Sanity check to ensure that some values are set after setting filetype.
-          eq("v:lua.require'man'.goto_tag", get_buf_option('tagfunc', BUFFER_1))
+          eq('xmlcomplete#CompleteTags', get_buf_option('omnifunc', BUFFER_1))
+          eq('xmlformat#Format()', get_buf_option('formatexpr', BUFFER_1))
           eq('xmlcomplete#CompleteTags', get_buf_option('omnifunc', BUFFER_2))
           eq('xmlformat#Format()', get_buf_option('formatexpr', BUFFER_2))
 

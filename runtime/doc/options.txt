@@ -3946,8 +3946,6 @@ A jump table for the options with a short description can be found at |Q_op|.
 
 	Example: >vim
 		set keywordprg=:help!
-		set keywordprg=man\ -s
-		set keywordprg=:Man
 <
 	This option cannot be set from a |modeline| or in the |sandbox|, for
 	security reasons.

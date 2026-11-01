@@ -65,7 +65,6 @@ Lua code lives in one of four places:
    - Don't use these legacy plugins as examples (their modules should live
      in `lua/nvim/x.lua`, not `lua/x.lua`):
      - ❌ editorconfig.lua
-     - ❌ man.lua
      - ❌ nvim.difftool
      - ❌ nvim.tohtml
      - ❌ nvim.undotree

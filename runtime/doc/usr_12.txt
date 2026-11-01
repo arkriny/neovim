@@ -231,45 +231,7 @@ want to count words in.  Then type g CTRL-G.  The result:
 For other ways to count words, lines and other items, see |count-items|.
 
 ==============================================================================
-*12.6*	Find a man page					*find-manpage*
-
-While editing a shell script or C program, you are using a command or function
-that you want to find the man page for (this is on Unix).  Let's first use a
-simple way: Move the cursor to the word you want to find help on and press >
-
-	K
-
-Nvim will run |:Man| on the word.  If the man page is found, it is displayed.
-You can also use the |:Man| command to open a window on a man page: >
-
-	:Man csh
-
-You can scroll around and the text is highlighted.  This allows you to find
-the help you were looking for.  Use CTRL-W w to jump to the window with the
-text you were working on.
-   To find a man page in a specific section, put the section number first.
-For example, to look in section 3 for "echo": >
-
-	:Man 3 echo
-
-To jump to another man page, which is in the text with the typical form
-"word(1)", press CTRL-] on it.  Further ":Man" commands will use the same
-window.
-
-To display a man page for the word under the cursor, use this: >
-
-	K
-
-For example, you want to know the return value of "strstr()" while editing
-this line:
-
-	if ( strstr (input, "aap") == ) ~
-
-Move the cursor to somewhere on "strstr" and type "K".  A window will open
-to display the man page for strstr().
-
-==============================================================================
-*12.7*	Trim blanks
+*12.6*	Trim blanks
 
 Some people find spaces and tabs at the end of a line useless, wasteful, and
 ugly.  To remove whitespace at the end of every line, execute the following
@@ -297,7 +259,7 @@ does change.  Type "n" to find the next match.  Repeat this until no more
 matches can be found.
 
 ==============================================================================
-*12.8*	Find where a word is used
+*12.7*	Find where a word is used
 
 If you are a Unix user, you can use a combination of Vim and the grep command
 to edit all the files that contain a given word.  This is extremely useful if

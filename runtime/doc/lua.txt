@@ -675,7 +675,7 @@ vim.iconv({str}, {from}, {to})                                   *vim.iconv()*
     {from} to encoding {to}. When the conversion fails `nil` is returned. When
     some characters could not be converted they are replaced with "?". The
     encoding names are whatever the iconv() library function can accept, see
-    ":Man 3 iconv".
+    iconv manual page.
 
     Parameters: ~
       • {str}   (`string`) Text to convert

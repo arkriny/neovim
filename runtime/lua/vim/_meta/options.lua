@@ -3848,7 +3848,6 @@ vim.go.km = vim.go.keymodel
 --- - ":help!" performs `:help!` (DWIM) on the `WORD` at cursor.
 --- - If the value starts with ":", it is invoked as an Ex command
 ---   prefixed with [count].
---- - If "man" or "man -s", [count] is the manpage section number.
 ---
 --- See `option-backslash` about including spaces and backslashes.
 ---
@@ -3856,15 +3855,14 @@ vim.go.km = vim.go.keymodel
 ---
 --- ```vim
 --- 	set keywordprg=:help!
---- 	set keywordprg=man\ -s
---- 	set keywordprg=:Man
+--- 	set keywordprg=:help
 --- ```
 ---
 --- This option cannot be set from a `modeline` or in the `sandbox`, for
 --- security reasons.
 ---
 --- @type string
-vim.o.keywordprg = ":Man"
+vim.o.keywordprg = ":help"
 vim.o.kp = vim.o.keywordprg
 vim.bo.keywordprg = vim.o.keywordprg
 vim.bo.kp = vim.bo.keywordprg

@@ -167,7 +167,7 @@ function vim.str_utf_end(str, index) end
 --- returned.  When some characters could not be converted they
 --- are replaced with "?".
 --- The encoding names are whatever the iconv() library function
---- can accept, see ":Man 3 iconv".
+--- can accept, see ":help iconv".
 ---
 --- @param str string Text to convert
 --- @param from string Encoding of {str}

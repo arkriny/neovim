@@ -547,7 +547,7 @@ gO			Show a filetype-specific, navigable "outline" of the
 			current buffer. For example, in a |help| buffer this
 			shows the table of contents.
 
-			Works in |help| and |:Man| buffers, or any buffer with
+			Works in |help| buffers, or any buffer with
 			an active |LSP| client (|lsp-defaults|).
 
 [N]gs							*gs* *:sl* *:sleep*

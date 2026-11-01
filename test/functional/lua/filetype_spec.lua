@@ -168,7 +168,6 @@ describe('vim.filetype', function()
     for ft, opts in pairs {
       lua = { commentstring = '-- %s' },
       vim = { commentstring = '"%s' },
-      man = { tagfunc = "v:lua.require'man'.goto_tag" },
       xml = { formatexpr = 'xmlformat#Format()' },
     } do
       for option, value in pairs(opts) do

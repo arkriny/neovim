@@ -95,7 +95,6 @@ Defaults                                            *defaults* *nvim-defaults*
 - 'wildoptions' defaults to "pum,tagfile"
 
 - |editorconfig| plugin is enabled, .editorconfig settings are applied.
-- |man.lua| plugin is enabled, so |:Man| is available by default.
 - |matchit| plugin is enabled. To disable it in your config: >vim
     :let loaded_matchit = 1
 - |package-spellfile| plugin is enabled, spellfiles are installed by default
@@ -309,7 +308,6 @@ Commands:
 - |:Inspect|
 - |:InspectTree|
 - |:lsp|
-- |:Man| is available by default, with many improvements such as completion
 - |:match| can be invoked before highlight group is defined
 - |:restart|
 - |:source| works with Lua
