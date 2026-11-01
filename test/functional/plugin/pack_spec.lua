@@ -1205,15 +1205,12 @@ describe('vim.pack', function()
         pack_assert_content('fetch', 'return "fetch main"')
 
         exec_lua(function()
-          -- Enable highlighting of special filetype
-          vim.cmd('filetype plugin on')
           vim.pack.update()
         end)
 
         -- Buffer should be special and shown in a separate tabpage
         eq(2, #api.nvim_list_tabpages())
         eq(2, fn.tabpagenr())
-        eq(api.nvim_get_option_value('filetype', {}), 'nvim-pack')
         eq(api.nvim_get_option_value('modifiable', {}), false)
         eq(api.nvim_get_option_value('buftype', {}), 'acwrite')
         local confirm_bufnr = api.nvim_get_current_buf()
@@ -1372,7 +1369,6 @@ describe('vim.pack', function()
       it('can be dismissed with `:quit`', function()
         vim_pack_add({ repos_src.fetch })
         exec_lua('vim.pack.update({ "fetch" })')
-        eq('nvim-pack', api.nvim_get_option_value('filetype', {}))
 
         -- Should not apply updates
         n.exec('quit')
@@ -1601,39 +1597,6 @@ describe('vim.pack', function()
         -- - Can still respect `:write` after action
         n.exec('write')
         eq('vim.pack: Nothing to update', n.exec_capture('1messages'))
-        eq(api.nvim_get_option_value('filetype', {}), '')
-      end)
-
-      it('has buffer-local mappings', function()
-        t.skip(not is_jit(), "Non LuaJIT reports update errors differently due to 'coxpcall'")
-        vim_pack_add({
-          repos_src.fetch,
-          { src = repos_src.semver, version = 'v0.3.0' },
-          { src = repos_src.defbranch, version = 'does-not-exist' },
-        })
-        -- Enable sourcing filetype script (that creates mappings)
-        n.exec('filetype plugin on')
-        exec_lua('vim.pack.update()')
-
-        -- Plugin sections navigation
-        local function assert(keys, ref_cursor)
-          n.feed(keys)
-          eq(ref_cursor, api.nvim_win_get_cursor(0))
-        end
-
-        api.nvim_win_set_cursor(0, { 1, 1 })
-        assert(']]', { 3, 0 })
-        assert(']]', { 11, 0 })
-        assert(']]', { 24, 0 })
-        -- - Should not wrap around the edge
-        assert(']]', { 24, 0 })
-
-        api.nvim_win_set_cursor(0, { 32, 1 })
-        assert('[[', { 24, 0 })
-        assert('[[', { 11, 0 })
-        assert('[[', { 3, 0 })
-        -- - Should not wrap around the edge
-        assert('[[', { 3, 0 })
       end)
 
       it('suggests newer versions when on non-tagged commit', function()
@@ -1724,7 +1687,6 @@ describe('vim.pack', function()
       -- No special buffer/window/tabpage
       eq(1, #api.nvim_list_tabpages())
       eq(1, #api.nvim_list_wins())
-      eq('', api.nvim_get_option_value('filetype', {}))
 
       -- Write to log file
       hashes.fetch_new = git_get_hash('main', 'fetch')

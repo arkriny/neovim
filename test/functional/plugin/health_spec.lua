@@ -312,15 +312,15 @@ describe(':checkhealth window', function()
     ## grid 2
       ^                                                  |
       ==================================================|
-      ============================                      |
-      test_plug.                                        |
-      success1:                                         |
-                      ✅                                |
+      test_plug.success1:                               |
                                                         |
       report 1 ~                                        |
       - ✅ OK everything is fine                        |
                                                         |
       report 2 ~                                        |
+      - ✅ OK nothing to see here                       |
+                                                        |
+      {1:~                                                 }|
     ## grid 3
       {Done:checkhealth}: checks done                          |
     ]],

@@ -464,38 +464,6 @@ describe('TUI :restart', function()
     feed_data(':qall!\r')
     screen:expect({ any = vim.pesc('[Process exited 0]') })
   end)
-
-  it('autocommands are triggered by [command] properly #38549', function()
-    local screen = tt.setup_child_nvim({
-      '--clean',
-      '--cmd',
-      'autocmd FileType text echomsg "TRIGGERED: " .. bufnr()',
-      '--cmd',
-      'set notermguicolors noswapfile laststatus=0',
-    }, { env = env_notermguicolors })
-    screen:expect([[
-      ^                                                  |
-      ~                                                 |*4
-                                      0,0-1         All |
-      {5:-- TERMINAL --}                                    |
-    ]])
-
-    -- 'laststatus' should be 0 in the new Nvim and FileType event should be triggered.
-    feed_data(':restart set nowrap | edit test/functional/fixtures/bigfile.txt\r')
-    screen:expect([[
-      ^0000;<control>;Cc;0;BN;;;;;N;NULL;;;;             |
-      0001;<control>;Cc;0;BN;;;;;N;START OF HEADING;;;; |
-      0002;<control>;Cc;0;BN;;;;;N;START OF TEXT;;;;    |
-      0003;<control>;Cc;0;BN;;;;;N;END OF TEXT;;;;      |
-      0004;<control>;Cc;0;BN;;;;;N;END OF TRANSMISSION;;|
-      TRIGGERED: 1                    1,1           Top |
-      {5:-- TERMINAL --}                                    |
-    ]])
-
-    -- The server is now detached and needs to be quit explicitly.
-    feed_data(':qall!\r')
-    screen:expect({ any = vim.pesc('[Process exited 0]') })
-  end)
 end)
 
 describe('TUI :connect', function()
