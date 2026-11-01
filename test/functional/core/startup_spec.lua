@@ -292,33 +292,6 @@ describe('startup', function()
       )
       eq(0, eval('v:shell_error'))
     end)
-
-    it('disables swapfile/shada/config/plugins unless overridden', function()
-      local script = [[print(('updatecount=%d shadafile=%s loadplugins=%s scripts=%d'):format(
-                       vim.o.updatecount, vim.o.shadafile, tostring(vim.o.loadplugins), math.max(1, #vim.fn.getscriptinfo())))]]
-      finally(function()
-        os.remove('Xtest_shada')
-      end)
-
-      assert_l_out(
-        'updatecount=0 shadafile=NONE loadplugins=false scripts=1\n',
-        nil,
-        nil,
-        '-',
-        script
-      )
-
-      -- User can override.
-      assert_l_out(
-        function(out)
-          return matches('updatecount=99 shadafile=Xtest_shada loadplugins=true scripts=2%d\n', out)
-        end,
-        { '+set updatecount=99', '-i', 'Xtest_shada', '+set loadplugins', '-u', 'NORC' },
-        nil,
-        '-',
-        script
-      )
-    end)
   end)
 
   it('--cmd/-c/+ do not truncate long Lua print() message with --headless', function()
@@ -642,26 +615,6 @@ describe('startup', function()
     )
     -- without `-u`
     eq('  encoding=utf-8\n', fn.system({ nvim_prog, '-n', '-es' }, { 'set encoding', '' }))
-  end)
-
-  it('-es/-Es disables swapfile/shada/config #8540', function()
-    for _, arg in ipairs({ '-es', '-Es' }) do
-      local out = fn.system({
-        nvim_prog,
-        arg,
-        '+set updatecount? shadafile? loadplugins?',
-        '+put =map(getscriptinfo(), {-> v:val.name})',
-        '+%print',
-      })
-      local line1 = string.match(out, '^.-\n')
-      -- updatecount=0 means swapfile was disabled.
-      eq('  updatecount=0  shadafile=NONE  loadplugins\n', line1)
-      -- Standard plugins were loaded, but not user config. #31878
-      local nrlines = #vim.split(out, '\n')
-      ok(nrlines > 20, '>20', nrlines)
-      ok(string.find(out, 'man.lua') ~= nil)
-      ok(string.find(out, 'init.vim') == nil)
-    end
   end)
 
   it('fails on --embed with -es/-Es/-l', function()

@@ -76,10 +76,6 @@ Will start the browser in "/usr".
 	system documentation should contain an explanation on the keyboard
 	shortcuts somewhere.
 
-When you are not using the GUI version, you could use the file explorer window
-to select files like in a file browser.  However, this doesn't work for the
-":browse" command.  See |netrw-browse|.
-
 ==============================================================================
 *31.2*	Confirmation
 

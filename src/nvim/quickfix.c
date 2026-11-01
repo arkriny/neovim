@@ -5979,7 +5979,7 @@ static buf_T *load_dummy_buffer(char *fname, char *dirname_start, char *resultin
       failed = false;
       if (curbuf != newbuf) {
         // Bloody autocommands changed the buffer!  Can happen when
-        // using netrw and editing a remote file.  Use the current
+        // editing a remote file.  Use the current
         // buffer instead, delete the dummy one after restoring the
         // window stuff.
         set_bufref(&newbuf_to_wipe, newbuf);

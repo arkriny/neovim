@@ -314,27 +314,6 @@ single line >
     :map ;n   GoZ<Esc>:g/^[ <Tab>]*$/.,/[^ <Tab>]/-j<CR>Gdd
 
 ==============================================================================
-Compressing the help files				*gzip-helpfile*
-
-For those of you who are really short on disk space, you can compress the help
-files and still be able to view them with Vim.  This makes accessing the help
-files a bit slower and requires the "gzip" program.
-
-(1) Compress all the help files: "gzip doc/*.txt".
-
-(2) Edit "doc/tags" and change the ".txt" to ".txt.gz": >
-	:%s=\(\t.*\.txt\)\t=\1.gz\t=
-
-(3) Add this line to your vimrc: >
-	set helpfile={dirname}/help.txt.gz
-
-Where {dirname} is the directory where the help files are.  The |gzip| plugin
-will take care of decompressing the files.
-You must make sure that $VIMRUNTIME is set to where the other Vim files are,
-when they are not in the same location as the compressed "doc" directory.  See
-|$VIMRUNTIME|.
-
-==============================================================================
 Hex editing					*hex-editing* *using-xxd*
 
 See section |23.3| of the user manual.

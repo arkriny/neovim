@@ -4988,8 +4988,6 @@ vim.go.pm = vim.go.patchmode
 --- ```
 --- - A directory name may end in a ':' or '/'.
 --- - Environment variables are expanded `:set_env`.
---- - When using `netrw` URLs can be used.  For example, adding
----   "https://www.vim.org" will make ":find index.html" work.
 --- - Search upwards and downwards in a directory tree using "*", "**" and
 ---   ";".  See `file-searching` for info and syntax.
 --- - Careful with '\' characters, type two to get one in the option:

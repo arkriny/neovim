@@ -135,24 +135,6 @@ the URL is wrong, you don't have permission to read it, the network connection
 is down, etc.  Unfortunately, it's hard to tell the cause of the error.  You
 might want to try the manual way of downloading the file.
 
-Accessing files over the internet works with the netrw plugin.  Currently URLs
-with these formats are recognized:
-
-	`ftp://`	uses ftp
-	`rcp://`	uses rcp
-	`scp://`	uses scp
-	`http://`	uses wget (reading only)
-
-Vim doesn't do the communication itself, it relies on the mentioned programs
-to be available on your computer.  On most Unix systems "ftp" and "rcp" will
-be present.  "scp" and "wget" might need to be installed.
-
-Vim detects these URLs for each command that starts editing a new file, also
-with ":edit" and ":split", for example.  Write commands also work, except for
-`http://`.
-
-For more information, also about passwords, see |netrw|.
-
 ==============================================================================
 *23.3*	Binary files
 
@@ -238,21 +220,6 @@ Only changes in the hex part are used.  Changes in the printable text part on
 the right are ignored.
 
 See the manual page of xxd for more information.
-
-==============================================================================
-*23.4*	Compressed files
-
-This is easy: You can edit a compressed file just like any other file.  The
-"gzip" plugin takes care of decompressing the file when you edit it.  And
-compressing it again when you write it.
-   These compression methods are currently supported:
-
-	.Z	compress
-	.gz	gzip
-	.bz2	bzip2
-
-Vim uses the mentioned programs to do the actual compression and
-decompression.  You might need to install the programs first.
 
 ==============================================================================
 

@@ -283,10 +283,7 @@ CTRL-^			Edit the alternate file.  Mostly the alternate file is
 				:e <cfile>
 <			To make gf always work like that: >
 				:map gf :e <cfile><CR>
-<			If the name is a hypertext link, that looks like
-			"type://machine/path", you need the |netrw| plugin.
-			For Unix the '~' character is expanded, like in
-			"~user/file".  Environment variables are expanded too
+<			Environment variables are expanded too
 			|expand-env|.
 
 							*v_gf*

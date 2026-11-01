@@ -4503,8 +4503,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	   Similarly for 'eol' and 'bomb'.
 	This option is not set when a change is made to the buffer as the
 	result of a BufNewFile, BufRead/BufReadPost, BufWritePost,
-	FileAppendPost or VimLeave autocommand event.  See |gzip-example| for
-	an explanation.
+	FileAppendPost or VimLeave autocommand event.
 
 	When 'buftype' is "prompt", 'modified' is not implicitly set when the
 	buffer is changed, but a user or plugin may explicitly set it.
@@ -4840,8 +4839,6 @@ A jump table for the options with a short description can be found at |Q_op|.
 		set path=,,
 <	- A directory name may end in a ':' or '/'.
 	- Environment variables are expanded |:set_env|.
-	- When using |netrw| URLs can be used.  For example, adding
-	  "https://www.vim.org" will make ":find index.html" work.
 	- Search upwards and downwards in a directory tree using "*", "**" and
 	  ";".  See |file-searching| for info and syntax.
 	- Careful with '\' characters, type two to get one in the option: >vim

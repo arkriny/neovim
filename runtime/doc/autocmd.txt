@@ -17,7 +17,7 @@ You can specify commands to be executed automatically when reading or writing
 a file, when entering or leaving a buffer or window, and when exiting Vim.
 For example, you can create an autocommand to set the 'cindent' option for
 files matching `*.c`.  You can also use autocommands to implement advanced
-features, such as editing compressed files (see |gzip-example|).  The usual
+features, such as editing compressed files.  The usual
 place to put autocommands is in your vimrc file.
 
 				*E203* *E204* *E143* *E855* *E937* *E952*
@@ -1631,45 +1631,6 @@ name).  "<abuf>" can be used for the buffer number of the currently effective
 buffer.  This also works for buffers that don't have a name.  But it doesn't
 work for files without a buffer (e.g., with ":r file").
 
-							*gzip-example*
-Examples for reading and writing compressed files: >
-  :augroup gzip
-  :  autocmd!
-  :  autocmd BufReadPre,FileReadPre	*.gz set bin
-  :  autocmd BufReadPost,FileReadPost	*.gz '[,']!gunzip
-  :  autocmd BufReadPost,FileReadPost	*.gz set nobin
-  :  autocmd BufReadPost,FileReadPost	*.gz execute ":doautocmd BufReadPost " .. expand("%:r")
-  :  autocmd BufWritePost,FileWritePost	*.gz !mv <afile> <afile>:r
-  :  autocmd BufWritePost,FileWritePost	*.gz !gzip <afile>:r
-
-  :  autocmd FileAppendPre		*.gz !gunzip <afile>
-  :  autocmd FileAppendPre		*.gz !mv <afile>:r <afile>
-  :  autocmd FileAppendPost		*.gz !mv <afile> <afile>:r
-  :  autocmd FileAppendPost		*.gz !gzip <afile>:r
-  :augroup END
-
-The "gzip" group is used to be able to delete any existing autocommands with
-":autocmd!", for when the file is sourced twice.
-
-("<afile>:r" is the file name without the extension, see |:_%:|)
-
-The commands executed for the BufNewFile, BufRead/BufReadPost, BufWritePost,
-FileAppendPost and VimLeave events do not set or reset the changed flag of the
-buffer.  When you decompress the buffer with the BufReadPost autocommands, you
-can still exit with ":q".  When you use ":undo" in BufWritePost to undo the
-changes made by BufWritePre commands, you can still do ":q" (this also makes
-"ZZ" work).  If you do want the buffer to be marked as modified, set the
-'modified' option.
-
-To execute Normal mode commands from an autocommand, use the ":normal"
-command.  Use with care!  If the Normal mode command is not finished, the user
-needs to type characters (e.g., after ":normal m" you need to type a mark
-name).
-
-If you want the buffer to be unmodified after changing it, reset the
-'modified' option.  This makes it possible to exit the buffer with ":q"
-instead of ":q!".
-
 							*autocmd-nested* *E218*
 By default, autocommands do not nest.  For example, if you use ":e" or ":w" in
 an autocommand, Vim does not execute the BufRead and BufWrite autocommands for
@@ -1799,8 +1760,6 @@ and "++ff=" argument that are effective.  These should be used for the command
 that reads/writes the file.  The |v:cmdbang| variable is one when "!" was
 used, zero otherwise.
 
-See the $VIMRUNTIME/pack/dist/opt/netrw/plugin/netrwPlugin.vim for examples.
-
 ==============================================================================
 11. Disabling autocommands				*autocmd-disable*
 
@@ -1819,7 +1778,7 @@ following command.  Example: >
 	:noautocmd w fname.gz
 
 This will write the file without triggering the autocommands defined by the
-gzip plugin.
+plugin.
 
 Note that some autocommands are not triggered right away, but only later.
 This specifically applies to |CursorMoved| and |TextChanged|.

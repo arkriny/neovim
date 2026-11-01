@@ -24,7 +24,6 @@ Help-link		Loaded	Short description ~
 |man.lua|		Yes	View manpages in Nvim
 |matchit|		Yes	Extended |%| matching
 |matchparen|		Yes	Highlight matching pairs
-|netrw|			Yes	Reading and writing files over a network
 |package-cfilter|	No	Filtering quickfix/location list
 |package-justify|	No	Justify text
 |package-nohlsearch|	No	Automatically run :nohlsearch
@@ -32,14 +31,11 @@ Help-link		Loaded	Short description ~
 |package-termdebug|	No	Debug inside Nvim with gdb
 |package-tohtml|	No	Convert buffer to html, syntax included
 |package-undotree|	No	Interactive textual undotree
-|pi_gzip.txt|		Yes	Reading and writing compressed files
 |pi_msgpack.txt|	No	msgpack utilities
 |pi_paren.txt|		Yes	Highlight matching parens
 |pi_spec.txt|		Yes	Filetype plugin to work with rpm spec files
 |pi_swapmouse|		No	Swap meaning of left and right mouse buttons
-|pi_tar.txt|		Yes	Tar file explorer
 |pi_tutor.txt|		Yes	Interactive tutorial
-|pi_zip.txt|		Yes	Zip archive explorer
 
 ==============================================================================
 Builtin plugin: difftool                                            *difftool*

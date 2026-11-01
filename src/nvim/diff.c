@@ -1062,7 +1062,7 @@ int diff_internal(void)
 ///
 /// When using the external "diff" command the buffers are written to a file,
 /// also for unmodified buffers (the file could have been produced by
-/// autocommands, e.g. the netrw plugin).
+/// autocommands).
 ///
 /// @param eap can be NULL
 void ex_diffupdate(exarg_T *eap)
@@ -1302,7 +1302,7 @@ static int diff_file(diffio_T *dio)
 /// Create a new version of a file from the current buffer and a diff file.
 ///
 /// The buffer is written to a file, also for unmodified buffers (the file
-/// could have been produced by autocommands, e.g. the netrw plugin).
+/// could have been produced by autocommands).
 ///
 /// @param eap
 void ex_diffpatch(exarg_T *eap)

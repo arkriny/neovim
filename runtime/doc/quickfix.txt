@@ -1047,8 +1047,6 @@ advantages are:
 - Line separators and encoding are automatically recognized, as if a file is
   being edited.
 - Uses Vim search patterns.  Multi-line patterns can be used.
-- When plugins are enabled: compressed and remote files can be searched.
-	|gzip| |netrw|
 
 To be able to do this Vim loads each file as if it is being edited.  When
 there is no match in the file the associated buffer is wiped out again.  The
