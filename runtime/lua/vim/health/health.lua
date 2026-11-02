@@ -482,66 +482,6 @@ local function check_sysinfo()
   vim.health.info('Operating system: ' .. os_string)
   vim.health.info('Terminal: ' .. terminal)
   vim.health.info('$TERM: ' .. term_env)
-
-  local body = vim.text.indent(
-    0,
-    string.format(
-      [[
-    ## Problem
-
-    Describe the problem (concisely).
-
-    ## Steps to reproduce
-
-    ```
-    nvim --clean
-    ```
-
-    ## Expected behavior
-
-    ## System info
-
-    - Nvim version (nvim -v): `%s` neovim/neovim@%s
-    - Vim (not Nvim) behaves the same?: ?
-    - Operating system/version: %s
-    - Terminal name/version: %s
-    - $TERM environment variable: `%s`
-    - Installation: ?
-
-]],
-      nvim_version,
-      commit,
-      os_string,
-      terminal,
-      term_env
-    )
-  )
-
-  vim.api.nvim_create_autocmd('FileType', {
-    pattern = 'checkhealth',
-    once = true,
-    callback = function(ev)
-      local buf = ev.buf
-      local win = vim.fn.bufwinid(buf)
-      if win == -1 then
-        return
-      end
-      local encoded_body = vim.uri_encode(body) --- @type string
-      local issue_url = 'https://github.com/neovim/neovim/issues/new?type=Bug&body=' .. encoded_body
-
-      _G.nvim_health_bugreport_open = function()
-        vim.ui.open(issue_url)
-      end
-      vim.wo[win].winbar =
-        '%#WarningMsg#%@v:lua.nvim_health_bugreport_open@Click to Create Bug Report on GitHub%X%*'
-
-      vim.api.nvim_create_autocmd('BufDelete', {
-        buffer = buf,
-        once = true,
-        command = 'lua _G.nvim_health_bugreport_open = nil',
-      })
-    end,
-  })
 end
 
 function M.check()
