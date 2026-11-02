@@ -27,7 +27,6 @@
 #include "nvim/mbyte_defs.h"
 #include "nvim/memline.h"
 #include "nvim/memory.h"
-#include "nvim/menu.h"
 #include "nvim/message.h"
 #include "nvim/mouse.h"
 #include "nvim/move.h"
@@ -280,54 +279,6 @@ static int get_fpos_of_mouse(pos_T *mpos)
   return IN_BUFFER;
 }
 
-static int do_popup(int which_button, int m_pos_flag, pos_T m_pos)
-{
-  int jump_flags = 0;
-  if (strcmp(p_mousem, "popup_setpos") == 0) {
-    // First set the cursor position before showing the popup menu.
-    if (VIsual_active) {
-      // set MOUSE_MAY_STOP_VIS if we are outside the selection
-      // or the current window (might have false negative here)
-      if (m_pos_flag != IN_BUFFER) {
-        jump_flags = MOUSE_MAY_STOP_VIS;
-      } else {
-        if (VIsual_mode == 'V') {
-          if ((curwin->w_cursor.lnum <= VIsual.lnum
-               && (m_pos.lnum < curwin->w_cursor.lnum || VIsual.lnum < m_pos.lnum))
-              || (VIsual.lnum < curwin->w_cursor.lnum
-                  && (m_pos.lnum < VIsual.lnum || curwin->w_cursor.lnum < m_pos.lnum))) {
-            jump_flags = MOUSE_MAY_STOP_VIS;
-          }
-        } else if ((ltoreq(curwin->w_cursor, VIsual)
-                    && (lt(m_pos, curwin->w_cursor) || lt(VIsual, m_pos)))
-                   || (lt(VIsual, curwin->w_cursor)
-                       && (lt(m_pos, VIsual) || lt(curwin->w_cursor, m_pos)))) {
-          jump_flags = MOUSE_MAY_STOP_VIS;
-        } else if (VIsual_mode == Ctrl_V) {
-          colnr_T leftcol, rightcol;
-          getvcols(curwin, &curwin->w_cursor, &VIsual, &leftcol, &rightcol);
-          getvcol(curwin, &m_pos, NULL, &m_pos.col, NULL);
-          if (m_pos.col < leftcol || m_pos.col > rightcol) {
-            jump_flags = MOUSE_MAY_STOP_VIS;
-          }
-        }
-      }
-    } else {
-      jump_flags = MOUSE_MAY_STOP_VIS;
-    }
-  }
-  if (jump_flags) {
-    jump_flags = jump_to_mouse(jump_flags, NULL, which_button);
-    redraw_curbuf_later(VIsual_active ? UPD_INVERTED : UPD_VALID);
-    update_screen();
-    setcursor();
-    ui_flush();  // Update before showing popup menu
-  }
-  show_popupmenu();
-  got_click = false;  // ignore release events
-  return jump_flags;
-}
-
 /// Do the appropriate action for the current mouse click in the current mode.
 /// Not used for Command-line mode.
 ///
@@ -444,17 +395,13 @@ bool do_mouse(oparg_T *oap, int c, int dir, int count, bool fixindent)
 
   // When a modifier is down, ignore drag and release events, as well as
   // multiple clicks and the middle mouse button.
-  // Accept shift-leftmouse drags when 'mousemodel' is "popup.*".
+  // Accept alt-right mouse drags.
   if ((mod_mask & (MOD_MASK_SHIFT | MOD_MASK_CTRL | MOD_MASK_ALT
                    | MOD_MASK_META))
       && (!is_click
           || (mod_mask & MOD_MASK_MULTI_CLICK)
           || which_button == MOUSE_MIDDLE)
-      && !((mod_mask & (MOD_MASK_SHIFT|MOD_MASK_ALT))
-           && mouse_model_popup()
-           && which_button == MOUSE_LEFT)
       && !((mod_mask & MOD_MASK_ALT)
-           && !mouse_model_popup()
            && which_button == MOUSE_RIGHT)) {
     return false;
   }
@@ -582,31 +529,6 @@ bool do_mouse(oparg_T *oap, int c, int dir, int count, bool fixindent)
     }
   }
 
-  int m_pos_flag = 0;
-  pos_T m_pos = { 0 };
-  // When 'mousemodel' is "popup" or "popup_setpos", translate mouse events:
-  // right button up   -> pop-up menu
-  // shift-left button -> right button
-  // alt-left button   -> alt-right button
-  if (mouse_model_popup()) {
-    m_pos_flag = get_fpos_of_mouse(&m_pos);
-    if (!(m_pos_flag & (IN_STATUS_LINE|MOUSE_WINBAR|MOUSE_STATUSCOL))
-        && which_button == MOUSE_RIGHT && !(mod_mask & (MOD_MASK_SHIFT|MOD_MASK_CTRL))) {
-      if (!is_click) {
-        // Ignore right button release events, only shows the popup
-        // menu on the button down event.
-        return false;
-      }
-      return (do_popup(which_button, m_pos_flag, m_pos) & CURSOR_MOVED);
-    }
-    // Only do this translation when mouse is over the buffer text
-    if (!(m_pos_flag & (IN_STATUS_LINE|MOUSE_WINBAR|MOUSE_STATUSCOL))
-        && (which_button == MOUSE_LEFT && (mod_mask & (MOD_MASK_SHIFT|MOD_MASK_ALT)))) {
-      which_button = MOUSE_RIGHT;
-      mod_mask &= ~MOD_MASK_SHIFT;
-    }
-  }
-
   pos_T end_visual = { 0 };
   pos_T start_visual = { 0 };
   if ((State & (MODE_NORMAL | MODE_INSERT))
@@ -694,12 +616,6 @@ bool do_mouse(oparg_T *oap, int c, int dir, int count, bool fixindent)
     if (click_defs != NULL) {
       switch (click_defs[click_col].type) {
       case kStlClickDisabled:
-        // If there is no click definition, still open the popupmenu for a
-        // statuscolumn click like a click in the sign/number column does.
-        if (in_statuscol && mouse_model_popup()
-            && which_button == MOUSE_RIGHT && !(mod_mask & (MOD_MASK_SHIFT|MOD_MASK_CTRL))) {
-          do_popup(which_button, m_pos_flag, m_pos);
-        }
         break;
       case kStlClickFuncRun:
         call_click_def_func(click_defs, click_col, which_button);
@@ -1151,12 +1067,6 @@ bool is_mouse_key(int c)
          || c == K_X2MOUSE
          || c == K_X2DRAG
          || c == K_X2RELEASE;
-}
-
-/// @return  true when 'mousemodel' is set to "popup" or "popup_setpos".
-static bool mouse_model_popup(void)
-{
-  return p_mousem[0] == 'p';
 }
 
 static win_T *dragwin = NULL;  ///< window being dragged

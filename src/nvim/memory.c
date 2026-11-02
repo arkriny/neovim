@@ -881,11 +881,6 @@ void free_all_mem(void)
   ex_comclear(NULL);
 
   if (curbuf != NULL) {
-    // Clear menus.
-    do_cmdline_cmd("aunmenu *");
-    do_cmdline_cmd("tlunmenu *");
-    do_cmdline_cmd("menutranslate clear");
-
     // Clear mappings, abbreviations, breakpoints.
     // NB: curbuf not used with local=false arg
     map_clear_mode(curbuf, MAP_ALL_MODES, false, false);

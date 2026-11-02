@@ -19,8 +19,7 @@
 /// The encoding of a file is specified with 'fileencoding'.  Conversion
 /// is to be done when it's different from "utf-8".
 ///
-/// Vim scripts may contain an ":scriptencoding" command. This has an effect
-/// for some commands, like ":menutrans".
+/// Vim scripts may contain an ":scriptencoding" command.
 
 #include <assert.h>
 #include <ctype.h>

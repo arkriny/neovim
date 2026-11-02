@@ -769,7 +769,6 @@ Short explanation of each option:		*option-list*
 'keymodel'	  'km'	    enable starting/stopping selection with keys
 'keywordprg'	  'kp'	    program to use for the "K" command
 'langmap'	  'lmap'    alphabetic characters for other language mode
-'langmenu'	  'lm'	    language to be used for the menus
 'langremap'	  'lrm'	    do apply 'langmap' to mapped characters
 'laststatus'	  'ls'	    tells when last window has status lines
 'lazyredraw'	  'lz'	    don't redraw while executing macros
@@ -792,7 +791,6 @@ Short explanation of each option:		*option-list*
 'maxfuncdepth'	  'mfd'     maximum recursive depth for user functions
 'maxmapdepth'	  'mmd'     maximum recursive depth for mapping
 'maxmempattern'   'mmp'     maximum memory (in Kbyte) used for pattern search
-'menuitems'	  'mis'     maximum number of items in a menu
 'mkspellmem'	  'msm'     memory used before |:mkspell| compresses the tree
 'modeline'	  'ml'	    recognize modelines at start or end of file
 'modelineexpr'	  'mle'	    allow setting expression options from a modeline
@@ -1369,19 +1367,6 @@ Context-sensitive completion on the command-line:
 |:filetype|	:filetype plugin indent on
 					switch on file type detection, with
 					automatic indenting and settings
-
-------------------------------------------------------------------------------
-*Q_gu*		GUI commands
-
-|:menu|		:menu			list all menus
-|:menu|		:menu {mpath}		list menus starting with {mpath}
-|:menu|		:menu {mpath} {rhs}	add menu {mpath}, giving {rhs}
-|:menu|		:menu {pri} {mpath} {rhs}
-					idem, with priorities {pri}
-|:menu|		:menu ToolBar.{name} {rhs}
-					add toolbar item, giving {rhs}
-|:tmenu|	:tmenu {mpath} {text}	add tooltip to menu {mpath}
-|:unmenu|	:unmenu {mpath}		remove menu {mpath}
 
 ------------------------------------------------------------------------------
 *Q_fo*		Folding

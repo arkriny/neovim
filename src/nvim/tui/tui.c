@@ -1325,11 +1325,6 @@ void tui_mode_info_set(TUIData *tui, bool guicursor_enabled, Array args)
   tui_set_mode(tui, tui->showing_mode);
 }
 
-void tui_update_menu(TUIData *tui)
-{
-  // Do nothing; menus are for GUI only
-}
-
 void tui_busy_start(TUIData *tui)
 {
   tui->busy = true;

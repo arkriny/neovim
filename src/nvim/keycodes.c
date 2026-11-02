@@ -637,7 +637,7 @@ int get_mouse_button(int code, bool *is_click, bool *is_drag)
 
 /// Replace any terminal code strings with the equivalent internal representation.
 ///
-/// Used for the "from" and "to" part of a mapping, and the "to" part of a menu command.
+/// Used for the "from" and "to" part of a mapping.
 /// Any strings like "<C-UP>" are also replaced, unless `special` is false.
 /// K_SPECIAL by itself is replaced by K_SPECIAL KS_SPECIAL KE_FILLER.
 ///

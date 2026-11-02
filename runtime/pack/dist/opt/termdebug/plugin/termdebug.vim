@@ -1016,7 +1016,6 @@ func s:InstallCommands()
   command Source call s:GotoSourcewinOrCreateIt()
   command Asm call s:GotoAsmwinOrCreateIt()
   command Var call s:GotoVariableswinOrCreateIt()
-  command Winbar call s:InstallWinbar(1)
 
   let map = 1
   if exists('g:termdebug_config')
@@ -1054,42 +1053,7 @@ func s:InstallCommands()
   endif
 
 
-  if has('menu') && &mouse != ''
-    call s:InstallWinbar(0)
-
-    let popup = 1
-    if exists('g:termdebug_config')
-      let popup = get(g:termdebug_config, 'popup', 1)
-    elseif exists('g:termdebug_popup')
-      let popup = g:termdebug_popup
-    endif
-    if popup
-      let s:saved_mousemodel = &mousemodel
-      let &mousemodel = 'popup_setpos'
-      an 1.200 PopUp.-SEP3-     <Nop>
-      an 1.210 PopUp.Set\ breakpoint    :Break<CR>
-      an 1.220 PopUp.Clear\ breakpoint  :Clear<CR>
-      an 1.230 PopUp.Run\ until         :Until<CR>
-      an 1.240 PopUp.Evaluate           :Evaluate<CR>
-    endif
-  endif
-
   let &cpo = save_cpo
-endfunc
-
-" let s:winbar_winids = []
-
-" Install the window toolbar in the current window.
-func s:InstallWinbar(force)
-  " if has('menu') && &mouse != ''
-  "   nnoremenu WinBar.Step   :Step<CR>
-  "   nnoremenu WinBar.Next   :Over<CR>
-  "   nnoremenu WinBar.Finish :Finish<CR>
-  "   nnoremenu WinBar.Cont   :Continue<CR>
-  "   nnoremenu WinBar.Stop   :Stop<CR>
-  "   nnoremenu WinBar.Eval   :Evaluate<CR>
-  "   call add(s:winbar_winids, win_getid())
-  " endif
 endfunc
 
 " Delete installed debugger commands in the current window.
@@ -1114,7 +1078,6 @@ func s:DeleteCommands()
   delcommand Source
   delcommand Asm
   delcommand Var
-  delcommand Winbar
 
   if exists('s:saved_K_map')
     if !empty(s:saved_K_map) && !s:saved_K_map.buffer
@@ -1142,33 +1105,6 @@ func s:DeleteCommands()
       nunmap -
     endif
     unlet s:saved_minus_map
-  endif
-
-  if has('menu')
-    " Remove the WinBar entries from all windows where it was added.
-    " let curwinid = win_getid()
-    " for winid in s:winbar_winids
-    "   if win_gotoid(winid)
-    "     aunmenu WinBar.Step
-    "     aunmenu WinBar.Next
-    "     aunmenu WinBar.Finish
-    "     aunmenu WinBar.Cont
-    "     aunmenu WinBar.Stop
-    "     aunmenu WinBar.Eval
-    "   endif
-    " endfor
-    " call win_gotoid(curwinid)
-    " let s:winbar_winids = []
-
-    if exists('s:saved_mousemodel')
-      let &mousemodel = s:saved_mousemodel
-      unlet s:saved_mousemodel
-      aunmenu PopUp.-SEP3-
-      aunmenu PopUp.Set\ breakpoint
-      aunmenu PopUp.Clear\ breakpoint
-      aunmenu PopUp.Run\ until
-      aunmenu PopUp.Evaluate
-    endif
   endif
 
   call sign_unplace('TermDebug')

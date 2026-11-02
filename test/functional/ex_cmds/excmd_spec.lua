@@ -37,10 +37,6 @@ describe('Ex cmds', function()
       ':bdelete 9999999999999999999999999999999999999999',
       'Vim(bdelete):E516: No buffers were deleted'
     )
-    eq(
-      'Vim(menu):E329: No menu "9999999999999999999999999999999999999999"',
-      pcall_err(command, ':menu 9999999999999999999999999999999999999999')
-    )
     assert_alive()
   end)
 

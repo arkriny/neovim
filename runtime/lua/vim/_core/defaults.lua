@@ -1,4 +1,4 @@
--- Default user-commands, autocmds, mappings, menus.
+-- Default user-commands, autocmds, mappings.
 
 --- Default user commands
 do
@@ -475,72 +475,6 @@ do
       end
     end, { desc = 'Select child (inner) node' })
   end
-end
-
---- Default menus
-do
-  --- Right click popup menu
-  vim.cmd([[
-    amenu     PopUp.Open\ in\ web\ browser  gx
-    anoremenu PopUp.Inspect                 <Cmd>Inspect<CR>
-    anoremenu PopUp.Go\ to\ definition      <Cmd>lua vim.lsp.buf.definition()<CR>
-    anoremenu PopUp.Show\ Diagnostics       <Cmd>lua vim.diagnostic.open_float()<CR>
-    anoremenu PopUp.Show\ All\ Diagnostics  <Cmd>lua vim.diagnostic.setqflist()<CR>
-    anoremenu PopUp.Configure\ Diagnostics  <Cmd>help vim.diagnostic.config()<CR>
-    anoremenu PopUp.-1-                     <Nop>
-    vnoremenu PopUp.Cut                     "+x
-    vnoremenu PopUp.Copy                    "+y
-    anoremenu PopUp.Paste                   "+gP
-    vnoremenu PopUp.Paste                   "+P
-    vnoremenu PopUp.Delete                  "_x
-    nnoremenu PopUp.Select\ All             ggVG
-    vnoremenu PopUp.Select\ All             gg0oG$
-    inoremenu PopUp.Select\ All             <C-Home><C-O>VG
-    anoremenu PopUp.-2-                     <Nop>
-    anoremenu PopUp.How-to\ disable\ mouse  <Cmd>help disable-mouse<CR>
-  ]])
-
-  local function enable_ctx_menu()
-    vim.cmd([[
-      amenu disable PopUp.Go\ to\ definition
-      amenu disable PopUp.Open\ in\ web\ browser
-      amenu disable PopUp.Show\ Diagnostics
-      amenu disable PopUp.Show\ All\ Diagnostics
-      amenu disable PopUp.Configure\ Diagnostics
-    ]])
-
-    local url = require('vim.ui')._get_urls()[1]
-    if url and vim.startswith(url, 'http') then
-      vim.cmd([[amenu enable PopUp.Open\ in\ web\ browser]])
-    elseif vim.lsp.get_clients({ bufnr = 0 })[1] then
-      vim.cmd([[anoremenu enable PopUp.Go\ to\ definition]])
-    end
-
-    local lnum = vim.fn.getcurpos()[2] - 1 ---@type integer
-    local diagnostic = false
-    if next(vim.diagnostic.get(0, { lnum = lnum })) ~= nil then
-      diagnostic = true
-      vim.cmd([[anoremenu enable PopUp.Show\ Diagnostics]])
-    end
-
-    if diagnostic or next(vim.diagnostic.count(0)) ~= nil then
-      vim.cmd([[
-        anoremenu enable PopUp.Show\ All\ Diagnostics
-        anoremenu enable PopUp.Configure\ Diagnostics
-      ]])
-    end
-  end
-
-  local nvim_popupmenu_augroup = vim.api.nvim_create_augroup('nvim.popupmenu', {})
-  vim.api.nvim_create_autocmd('MenuPopup', {
-    pattern = '*',
-    group = nvim_popupmenu_augroup,
-    desc = 'Mouse popup menu',
-    -- nested = true,
-    callback = function()
-      enable_ctx_menu()
-    end,
-  })
 end
 
 --- Default autocommands. See |default-autocmds|

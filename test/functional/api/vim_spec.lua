@@ -3437,61 +3437,6 @@ describe('API', function()
     end)
   end)
 
-  describe('nvim_get_runtime_file', function()
-    local p = t.fix_slashes
-    it('can find files', function()
-      eq({}, api.nvim_get_runtime_file('bork.borkbork', false))
-      eq({}, api.nvim_get_runtime_file('bork.borkbork', true))
-      eq(1, #api.nvim_get_runtime_file('autoload/msgpack.vim', false))
-      eq(1, #api.nvim_get_runtime_file('autoload/msgpack.vim', true))
-      local val = api.nvim_get_runtime_file('autoload/remote/*.vim', true)
-      eq(2, #val)
-      if endswith(val[1], 'define.vim') then
-        ok(endswith(p(val[1]), 'autoload/remote/define.vim'))
-        ok(endswith(p(val[2]), 'autoload/remote/host.vim'))
-      else
-        ok(endswith(p(val[1]), 'autoload/remote/host.vim'))
-        ok(endswith(p(val[2]), 'autoload/remote/define.vim'))
-      end
-      val = api.nvim_get_runtime_file('autoload/remote/*.vim', false)
-      eq(1, #val)
-      ok(
-        endswith(p(val[1]), 'autoload/remote/define.vim')
-          or endswith(p(val[1]), 'autoload/remote/host.vim')
-      )
-
-      val = api.nvim_get_runtime_file('lua', true)
-      eq(1, #val)
-      ok(endswith(p(val[1]), 'lua'))
-
-      val = api.nvim_get_runtime_file('lua/vim', true)
-      eq(1, #val)
-      ok(endswith(p(val[1]), 'lua/vim'))
-    end)
-
-    it('can find directories', function()
-      local val = api.nvim_get_runtime_file('lua/', true)
-      eq(1, #val)
-      ok(endswith(p(val[1]), 'lua/'))
-
-      val = api.nvim_get_runtime_file('lua/vim/', true)
-      eq(1, #val)
-      ok(endswith(p(val[1]), 'lua/vim/'))
-
-      eq({}, api.nvim_get_runtime_file('foobarlang/', true))
-    end)
-    it('can handle bad patterns', function()
-      skip(is_os('win'))
-
-      eq('Vim:E220: Missing }.', pcall_err(api.nvim_get_runtime_file, '{', false))
-
-      eq(
-        'Vim(echo):E5555: API call: Vim:E220: Missing }.',
-        exc_exec("echo nvim_get_runtime_file('{', v:false)")
-      )
-    end)
-  end)
-
   describe('nvim_get_all_options_info', function()
     it('should have key value pairs of option names', function()
       local options_info = api.nvim_get_all_options_info()

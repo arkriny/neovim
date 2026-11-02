@@ -193,18 +193,14 @@ enum {
 #define GO_DARKTHEME    'd'             // use dark theme variant
 #define GO_TABLINE      'e'             // may show tabline
 #define GO_FORG         'f'             // start GUI in foreground
-#define GO_GREY         'g'             // use grey menu items
 #define GO_HORSCROLL    'h'             // flexible horizontal scrolling
 #define GO_ICON         'i'             // use Vim icon
 #define GO_LEFT         'l'             // use left scrollbar
 #define GO_VLEFT        'L'             // left scrollbar with vert split
-#define GO_MENUS        'm'             // use menu bar
-#define GO_NOSYSMENU    'M'             // don't source system menu
 #define GO_POINTER      'p'             // pointer enter/leave callbacks
 #define GO_ASELPLUS     'P'             // autoselectPlus
 #define GO_RIGHT        'r'             // use right scrollbar
 #define GO_VRIGHT       'R'             // right scrollbar with vert split
-#define GO_TOOLBAR      'T'             // add toolbar
 #define GO_FOOTER       'F'             // add footer
 #define GO_VERTICAL     'v'             // arrange dialog buttons vertically
 #define GO_KEEPWINSIZE  'k'             // keep GUI window size
@@ -403,7 +399,6 @@ EXTERN char *p_km;              ///< 'keymodel'
 EXTERN char *p_langmap;         ///< 'langmap'
 EXTERN int p_lnr;               ///< 'langnoremap'
 EXTERN int p_lrm;               ///< 'langremap'
-EXTERN char *p_lm;              ///< 'langmenu'
 EXTERN OptInt p_lines;          ///< 'lines'
 EXTERN OptInt p_linespace;      ///< 'linespace'
 EXTERN int p_lisp;              ///< 'lisp'
@@ -424,7 +419,6 @@ EXTERN OptInt p_mco;            ///< 'maxcombine'
 EXTERN OptInt p_mfd;            ///< 'maxfuncdepth'
 EXTERN OptInt p_mmd;            ///< 'maxmapdepth'
 EXTERN OptInt p_mmp;            ///< 'maxmempattern'
-EXTERN OptInt p_mis;            ///< 'menuitems'
 EXTERN char *p_mopt;            ///< 'messagesopt'
 EXTERN OptInt p_msc;            ///< 'maxsearchcount'
 EXTERN char *p_msm;             ///< 'mkspellmem'
@@ -579,7 +573,6 @@ EXTERN int p_warn;              ///< 'warn'
 EXTERN char *p_wop;             ///< 'wildoptions'
 EXTERN unsigned wop_flags;
 EXTERN OptInt p_window;         ///< 'window'
-EXTERN char *p_wak;             ///< 'winaltkeys'
 EXTERN char *p_wig;             ///< 'wildignore'
 EXTERN char *p_ww;              ///< 'whichwrap'
 EXTERN OptInt p_wc;             ///< 'wildchar'

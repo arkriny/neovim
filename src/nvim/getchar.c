@@ -1276,7 +1276,7 @@ void ungetchars(int len)
 }
 
 /// Sync undo.  Called when typed characters are obtained from the typeahead
-/// buffer, or when a menu is used.
+/// buffer.
 /// Do not sync:
 /// - In Insert mode, unless cursor key has been used.
 /// - While reading a script file.

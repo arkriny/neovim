@@ -7,8 +7,6 @@
 
 " Copy the keymap to ~/.vim/keymap/
 " Start gvim
-" Need to disable the menu so that you can use the 'alt' key.
-"   set guioptions-=m
 " Select the new keymap
 "   set keymap=sinhala-phonetic_utf-8
 

@@ -26,7 +26,6 @@
 #include "nvim/mbyte.h"
 #include "nvim/memory.h"
 #include "nvim/memory_defs.h"
-#include "nvim/menu.h"
 #include "nvim/message.h"
 #include "nvim/option_vars.h"
 #include "nvim/os/input.h"
@@ -79,7 +78,6 @@ static const char *command_complete[] = {
   [EXPAND_LUA] = "lua",
   [EXPAND_MAPCLEAR] = "mapclear",
   [EXPAND_MAPPINGS] = "mapping",
-  [EXPAND_MENUS] = "menu",
   [EXPAND_MESSAGES] = "messages",
   [EXPAND_OWNSYNTAX] = "syntax",
   [EXPAND_SYNTIME] = "syntime",
@@ -287,9 +285,6 @@ const char *set_context_in_user_cmdarg(const char *cmd FUNC_ATTR_UNUSED, const c
     return NULL;
   }
 
-  if (context == EXPAND_MENUS) {
-    return set_context_in_menu_cmd(xp, cmd, (char *)arg, forceit);
-  }
   if (context == EXPAND_COMMANDS) {
     return arg;
   }

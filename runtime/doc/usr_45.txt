@@ -77,58 +77,6 @@ to others.  Upload it to https://github.com/vim/vim or e-mail it to the Vim
 maintainer <maintainer@vim.org>.  Or both.
 
 ==============================================================================
-*45.2*	Language for Menus
-
-The default menus are in English.  To be able to use your local language, they
-must be translated.  Normally this is automatically done for you if the
-environment is set for your language, just like with messages.  You don't need
-to do anything extra for this.  But it only works if translations for the
-language are available.
-   Suppose you are in Germany, with the language set to German, but prefer to
-use "File" instead of "Datei".  You can switch back to using the English menus
-this way: >
-
-	:set langmenu=none
-
-It is also possible to specify a language: >
-
-	:set langmenu=nl_NL.ISO_8859-1
-
-Like above, differences between "-" and "_" matter.  However, upper/lowercase
-differences are ignored here.
-   The 'langmenu' option must be set before the menus are loaded.  Once the
-menus have been defined changing 'langmenu' has no direct effect.  Therefore,
-put the command to set 'langmenu' in your vimrc file.
-   If you really want to switch menu language while running Vim, you can do it
-this way: >
-
-	:source $VIMRUNTIME/delmenu.vim
-	:set langmenu=de_DE.ISO_8859-1
-	:source $VIMRUNTIME/menu.vim
-
-There is one drawback: All menus that you defined yourself will be gone.  You
-will need to redefine them as well.
-
-
-DO-IT-YOURSELF MENU TRANSLATION
-
-To see which menu translations are available, look in this directory:
-
-	$VIMRUNTIME/lang ~
-
-The files are called menu_{language}.vim.  If you don't see the language you
-want to use, you can do your own translations.  The simplest way to do this is
-by copying one of the existing language files, and change it.
-   First find out the name of your language with the ":language" command.  Use
-this name, but with all letters made lowercase.  Then copy the file to your
-own runtime directory, as found early in 'runtimepath'.  For example, for Unix
-you would do: >
-
-	:!cp $VIMRUNTIME/lang/menu_ko_kr.euckr.vim ~/.config/nvim/lang/menu_nl_be.iso_8859-1.vim
-
-You will find hints for the translation in "$VIMRUNTIME/lang/README.txt".
-
-==============================================================================
 *45.3*	Using another encoding
 
 Vim guesses that the files you are going to edit are encoded for your

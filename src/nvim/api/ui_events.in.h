@@ -9,8 +9,6 @@
 
 void mode_info_set(Boolean enabled, Array cursor_styles)
   FUNC_API_SINCE(3);
-void update_menu(void)
-  FUNC_API_SINCE(3);
 void busy_start(void)
   FUNC_API_SINCE(3);
 void busy_stop(void)

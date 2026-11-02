@@ -68,7 +68,6 @@ defsfile:write(string.format(
 #include "nvim/mapping.h"
 #include "nvim/mark.h"
 #include "nvim/match.h"
-#include "nvim/menu.h"
 #include "nvim/message.h"
 #include "nvim/ops.h"
 #include "nvim/option.h"

@@ -336,8 +336,7 @@ bool check_changed_any(bool hidden, bool unload)
   if (!(p_confirm || (cmdmod.cmod_flags & CMOD_CONFIRM))) {
     // There must be a wait_return() for this message, do_buffer()
     // may cause a redraw.  But wait_return() is a no-op when vgetc()
-    // is busy (Quit used from window menu), then make sure we don't
-    // cause a scroll up.
+    // is busy, then make sure we don't cause a scroll up.
     if (vgetc_busy > 0) {
       msg_row = cmdline_row;
       msg_col = 0;

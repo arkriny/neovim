@@ -237,14 +237,8 @@ M.funcs = {
     args = { 0, 2 },
     desc = [=[
       The result is the {nr}th file in the argument list.  See
-      |arglist|.  "argv(0)" is the first one.  Example: >vim
-      	let i = 0
-      	while i < argc()
-      	  let f = escape(fnameescape(argv(i)), '.')
-      	  exe 'amenu Arg.' .. f .. ' :e ' .. f .. '<CR>'
-      	  let i = i + 1
-      	endwhile
-      <Without the {nr} argument, or when {nr} is -1, a |List| with
+      |arglist|.  "argv(0)" is the first one.
+      Without the {nr} argument, or when {nr} is -1, a |List| with
       the whole |arglist| is returned.
 
       The {winid} argument specifies the window ID, see |argc()|.
@@ -3877,7 +3871,6 @@ M.funcs = {
       locale		locale names (as output of locale -a)
       mapclear	buffer argument
       mapping		mapping name
-      menu		menus
       messages	|:messages| suboptions
       option		options
       packadd		optional package |pack-add| names
@@ -7500,136 +7493,6 @@ M.funcs = {
     params = { { 'expr', 'any' } },
     returns = 'number',
     signature = 'max({expr})',
-  },
-  menu_get = {
-    args = { 1, 2 },
-    desc = [=[
-      Returns a |List| of |Dictionaries| describing |menus| (defined
-      by |:menu|, |:amenu|, …), including |hidden-menus|.
-
-      {path} matches a menu by name, or all menus if {path} is an
-      empty string.  Example: >vim
-      	echo menu_get('File','')
-      	echo menu_get('')
-      <
-      {modes} is a string of zero or more modes (see |maparg()| or
-      |creating-menus| for the list of modes). "a" means "all".
-
-      Example: >vim
-      	nnoremenu &Test.Test inormal
-      	inoremenu Test.Test insert
-      	vnoremenu Test.Test x
-      	echo menu_get("")
-
-      <returns something like this: >
-
-      	[ {
-      	  "hidden": 0,
-      	  "name": "Test",
-      	  "priority": 500,
-      	  "shortcut": 84,
-      	  "submenus": [ {
-      	    "hidden": 0,
-      	    "mappings": {
-      	      i": {
-      		"enabled": 1,
-      		"noremap": 1,
-      		"rhs": "insert",
-      		"sid": 1,
-      		"silent": 0
-      	      },
-      	      n": { ... },
-      	      s": { ... },
-      	      v": { ... }
-      	    },
-      	    "name": "Test",
-      	    "priority": 500,
-      	    "shortcut": 0
-      	  } ]
-      	} ]
-      <
-    ]=],
-    name = 'menu_get',
-    params = { { 'path', 'string' }, { 'modes', 'string' } },
-    signature = 'menu_get({path} [, {modes}])',
-  },
-  menu_info = {
-    args = { 1, 2 },
-    base = 1,
-    desc = [=[
-      Return information about the specified menu {name} in
-      mode {mode}.  The menu name should be specified without the
-      shortcut character ('&').  If {name} is "", then the top-level
-      menu names are returned.
-
-      {mode} can be one of these strings:
-      	"n"	Normal
-      	"v"	Visual (including Select)
-      	"o"	Operator-pending
-      	"i"	Insert
-      	"c"	Cmd-line
-      	"s"	Select
-      	"x"	Visual
-      	"t"	Terminal-Job
-      	""	Normal, Visual and Operator-pending
-      	"!"	Insert and Cmd-line
-      When {mode} is omitted, the modes for "" are used.
-
-      Returns a |Dictionary| containing the following items:
-        accel		menu item accelerator text |menu-text|
-        display	display name (name without '&')
-        enabled	v:true if this menu item is enabled
-      		Refer to |:menu-enable|
-        icon		name of the icon file (for toolbar)
-      		|toolbar-icon|
-        iconidx	index of a built-in icon
-        modes		modes for which the menu is defined.  In
-      		addition to the modes mentioned above, these
-      		characters will be used:
-      		" "	Normal, Visual and Operator-pending
-        name		menu item name.
-        noremenu	v:true if the {rhs} of the menu item is not
-      		remappable else v:false.
-        priority	menu order priority |menu-priority|
-        rhs		right-hand-side of the menu item.  The
-      		returned string has special characters
-      		translated like in the output of the ":menu"
-      		command listing.  When the {rhs} of a menu
-      		item is empty, then "<Nop>" is returned.
-        script	v:true if script-local remapping of {rhs} is
-      		allowed else v:false.  See |:menu-script|.
-        shortcut	shortcut key (character after '&' in
-      		the menu name) |menu-shortcut|
-        silent	v:true if the menu item is created
-      		with <silent> argument |:menu-silent|
-        submenus	|List| containing the names of
-      		all the submenus.  Present only if the menu
-      		item has submenus.
-
-      Returns an empty dictionary if the menu item is not found.
-
-      Examples: >vim
-      	echo menu_info('Edit.Cut')
-      	echo menu_info('File.Save', 'n')
-
-      	" Display the entire menu hierarchy in a buffer
-      	func ShowMenu(name, pfx)
-      	  let m = menu_info(a:name)
-      	  call append(line('$'), a:pfx .. m.display)
-      	  for child in m->get('submenus', [])
-      	    call ShowMenu(a:name .. '.' .. escape(child, '.'),
-      					\ a:pfx .. '    ')
-      	  endfor
-      	endfunc
-      	new
-      	for topmenu in menu_info('').submenus
-      	  call ShowMenu(topmenu, '')
-      	endfor
-      <
-    ]=],
-    name = 'menu_info',
-    params = { { 'name', 'string' }, { 'mode', 'string' } },
-    signature = 'menu_info({name} [, {mode}])',
   },
   min = {
     args = 1,

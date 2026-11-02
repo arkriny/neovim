@@ -82,8 +82,6 @@
 #include "nvim/memline.h"
 #include "nvim/memory.h"
 #include "nvim/memory_defs.h"
-#include "nvim/menu.h"
-#include "nvim/menu_defs.h"
 #include "nvim/message.h"
 #include "nvim/move.h"
 #include "nvim/msgpack_rpc/channel.h"
@@ -1474,18 +1472,6 @@ static void f_expand(typval_T *argvars, typval_T *rettv, EvalFuncData fptr)
 #endif
 }
 
-/// "menu_get(path [, modes])" function
-static void f_menu_get(typval_T *argvars, typval_T *rettv, EvalFuncData fptr)
-{
-  tv_list_alloc_ret(rettv, kListLenMayKnow);
-  int modes = MENU_ALL_MODES;
-  if (argvars[1].v_type == VAR_STRING) {
-    const char *const strmodes = tv_get_string(&argvars[1]);
-    modes = get_menu_cmd_modes(strmodes, false, NULL, NULL);
-  }
-  menu_get((char *)tv_get_string(&argvars[0]), modes, rettv->vval.v_list);
-}
-
 /// "expandcmd()" function
 /// Expand all the special characters in a command string.
 static void f_expandcmd(typval_T *argvars, typval_T *rettv, EvalFuncData fptr)
@@ -2732,7 +2718,6 @@ static void f_has(typval_T *argvars, typval_T *rettv, EvalFuncData fptr)
     "osx",
     "osxdarwin",
 #endif
-    "menu",
     "mksession",
     "modify_fname",
     "mouse",
@@ -2782,7 +2767,6 @@ static void f_has(typval_T *argvars, typval_T *rettv, EvalFuncData fptr)
     "wildignore",
     "wildmenu",
     "windows",
-    "winaltkeys",
     "writebackup",
 #ifdef HAVE_XATTR
     "xattr",

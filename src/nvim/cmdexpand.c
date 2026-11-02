@@ -52,7 +52,6 @@
 #include "nvim/mbyte_defs.h"
 #include "nvim/memline.h"
 #include "nvim/memory.h"
-#include "nvim/menu.h"
 #include "nvim/message.h"
 #include "nvim/option.h"
 #include "nvim/option_vars.h"
@@ -465,10 +464,8 @@ static bool cmdline_compl_use_pum(bool need_wildmenu)
 /// and in search pattern completion matches.
 static int skip_wildmenu_char(expand_T *xp, char *s)
 {
-  if ((rem_backslash(s) && xp->xp_context != EXPAND_HELP
-       && xp->xp_context != EXPAND_PATTERN_IN_BUF)
-      || ((xp->xp_context == EXPAND_MENUS || xp->xp_context == EXPAND_MENUNAMES)
-          && (s[0] == '\t' || (s[0] == '\\' && s[1] != NUL)))) {
+  if (rem_backslash(s) && xp->xp_context != EXPAND_HELP
+      && xp->xp_context != EXPAND_PATTERN_IN_BUF) {
 #ifndef BACKSLASH_IN_FILENAME
     // TODO(bfredl): Why in the actual fuck are we special casing the
     // shell variety deep in the redraw logic? Shell special snowflakiness
@@ -487,14 +484,6 @@ static int skip_wildmenu_char(expand_T *xp, char *s)
 static int wildmenu_match_len(expand_T *xp, char *s)
 {
   int len = 0;
-
-  int emenu = (xp->xp_context == EXPAND_MENUS
-               || xp->xp_context == EXPAND_MENUNAMES);
-
-  // Check for menu separators - replace with '|'.
-  if (emenu && menu_is_separator(s)) {
-    return 1;
-  }
 
   while (*s != NUL) {
     s += skip_wildmenu_char(xp, s);
@@ -596,25 +585,16 @@ static void redraw_wildmenu(expand_T *xp, int num_matches, char **matches, int m
     }
 
     char *s = SHOW_MATCH(i);
-    // Check for menu separators - replace with '|'
-    int emenu = (xp->xp_context == EXPAND_MENUS || xp->xp_context == EXPAND_MENUNAMES);
-    if (emenu && menu_is_separator(s)) {
-      STRCPY(buf + len, transchar('|'));
-      l = (int)strlen(buf + len);
-      len += l;
-      clen += l;
-    } else {
-      for (; *s != NUL; s++) {
-        s += skip_wildmenu_char(xp, s);
-        clen += ptr2cells(s);
-        if ((l = utfc_ptr2len(s)) > 1) {
-          strncpy(buf + len, s, (size_t)l);  // NOLINT(runtime/printf)
-          s += l - 1;
-          len += l;
-        } else {
-          STRCPY(buf + len, transchar_byte((uint8_t)(*s)));
-          len += (int)strlen(buf + len);
-        }
+    for (; *s != NUL; s++) {
+      s += skip_wildmenu_char(xp, s);
+      clen += ptr2cells(s);
+      if ((l = utfc_ptr2len(s)) > 1) {
+        strncpy(buf + len, s, (size_t)l);  // NOLINT(runtime/printf)
+        s += l - 1;
+        len += l;
+      } else {
+        STRCPY(buf + len, transchar_byte((uint8_t)(*s)));
+        len += (int)strlen(buf + len);
       }
     }
     if (i == match) {
@@ -2240,36 +2220,6 @@ static const char *set_context_by_cmdname(const char *cmd, cmdidx_T cmdidx, expa
   case CMD_iunabbrev:
     return set_context_in_map_cmd(xp, (char *)cmd, (char *)arg, forceit, true,
                                   true, cmdidx);
-  case CMD_menu:
-  case CMD_noremenu:
-  case CMD_unmenu:
-  case CMD_amenu:
-  case CMD_anoremenu:
-  case CMD_aunmenu:
-  case CMD_nmenu:
-  case CMD_nnoremenu:
-  case CMD_nunmenu:
-  case CMD_vmenu:
-  case CMD_vnoremenu:
-  case CMD_vunmenu:
-  case CMD_omenu:
-  case CMD_onoremenu:
-  case CMD_ounmenu:
-  case CMD_imenu:
-  case CMD_inoremenu:
-  case CMD_iunmenu:
-  case CMD_cmenu:
-  case CMD_cnoremenu:
-  case CMD_cunmenu:
-  case CMD_tlmenu:
-  case CMD_tlnoremenu:
-  case CMD_tlunmenu:
-  case CMD_tmenu:
-  case CMD_tunmenu:
-  case CMD_popup:
-  case CMD_emenu:
-    return set_context_in_menu_cmd(xp, cmd, (char *)arg, forceit);
-
   case CMD_colorscheme:
     xp->xp_context = EXPAND_COLORS;
     xp->xp_pattern = (char *)arg;
@@ -2912,8 +2862,6 @@ static int ExpandOther(char *pat, expand_T *xp, regmatch_T *rmp, char ***matches
     { EXPAND_FUNCTIONS, get_function_name, false, true },
     { EXPAND_USER_FUNC, get_user_func_name, false, true },
     { EXPAND_EXPRESSION, get_expr_name, false, true },
-    { EXPAND_MENUS, get_menu_name, false, true },
-    { EXPAND_MENUNAMES, get_menu_names, false, true },
     { EXPAND_SYNTAX, get_syntax_name, true, true },
     { EXPAND_SYNTIME, get_syntime_arg, true, true },
     { EXPAND_HIGHLIGHT, get_highlight_name, true, false },
@@ -3174,13 +3122,6 @@ void ExpandGeneric(const char *const pat, expand_T *xp, regmatch_T *regmatch, ch
       GA_APPEND(char *, &ga, str);
     }
 
-    if (func == get_menu_names) {
-      // Test for separator added by get_menu_names().
-      str += strlen(str) - 1;
-      if (*str == '\001') {
-        *str = '.';
-      }
-    }
   }
 
   if (ga.ga_len == 0) {
@@ -3188,12 +3129,10 @@ void ExpandGeneric(const char *const pat, expand_T *xp, regmatch_T *regmatch, ch
   }
 
   // Sort the matches when using regular expression matching and sorting
-  // applies to the completion context. Menus and scriptnames should be kept
-  // in the specified order.
+  // applies to the completion context. Scriptnames should be kept in the
+  // specified order.
   const bool sort_matches = !fuzzy
-                            && xp->xp_context != EXPAND_MENUNAMES
                             && xp->xp_context != EXPAND_STRING_SETTING
-                            && xp->xp_context != EXPAND_MENUS
                             && xp->xp_context != EXPAND_SCRIPTNAMES
                             && xp->xp_context != EXPAND_ARGOPT;
 
@@ -3633,15 +3572,6 @@ int wildmenu_translate_key(CmdlineInfo *cclp, int key, expand_T *xp, bool did_wi
     }
   }
 
-  // Hitting CR after "emenu Name.": complete submenu
-  if (xp->xp_context == EXPAND_MENUNAMES
-      && cclp->cmdpos > 1
-      && cclp->cmdbuff[cclp->cmdpos - 1] == '.'
-      && cclp->cmdbuff[cclp->cmdpos - 2] != '\\'
-      && (c == '\n' || c == '\r' || c == K_KENTER)) {
-    c = K_DOWN;
-  }
-
   return c;
 }
 
@@ -3653,51 +3583,6 @@ static void cmdline_del(CmdlineInfo *cclp, int from)
           (size_t)cclp->cmdlen - (size_t)cclp->cmdpos + 1);
   cclp->cmdlen -= cclp->cmdpos - from;
   cclp->cmdpos = from;
-}
-
-/// Handle a key pressed when the wild menu for the menu names
-/// (EXPAND_MENUNAMES) is displayed.
-static int wildmenu_process_key_menunames(CmdlineInfo *cclp, int key, expand_T *xp)
-{
-  // Hitting <Down> after "emenu Name.": complete submenu
-  if (key == K_DOWN && cclp->cmdpos > 0
-      && cclp->cmdbuff[cclp->cmdpos - 1] == '.') {
-    key = (int)p_wc;
-    KeyTyped = true;  // in case the key was mapped
-  } else if (key == K_UP) {
-    // Hitting <Up>: Remove one submenu name in front of the
-    // cursor
-    bool found = false;
-
-    int j = (int)(xp->xp_pattern - cclp->cmdbuff);
-    int i = 0;
-    while (--j > 0) {
-      // check for start of menu name
-      if (cclp->cmdbuff[j] == ' '
-          && cclp->cmdbuff[j - 1] != '\\') {
-        i = j + 1;
-        break;
-      }
-      // check for start of submenu name
-      if (cclp->cmdbuff[j] == '.'
-          && cclp->cmdbuff[j - 1] != '\\') {
-        if (found) {
-          i = j + 1;
-          break;
-        } else {
-          found = true;
-        }
-      }
-    }
-    if (i > 0) {
-      cmdline_del(cclp, i);
-    }
-    key = (int)p_wc;
-    KeyTyped = true;  // in case the key was mapped
-    xp->xp_context = EXPAND_NOTHING;
-  }
-
-  return key;
 }
 
 /// Handle a key pressed when the wild menu for file names (EXPAND_FILES) or
@@ -3797,9 +3682,6 @@ static int wildmenu_process_key_filenames(CmdlineInfo *cclp, int key, expand_T *
 int wildmenu_process_key(CmdlineInfo *cclp, int key, expand_T *xp)
 {
   // Special translations for 'wildmenu'
-  if (xp->xp_context == EXPAND_MENUNAMES) {
-    return wildmenu_process_key_menunames(cclp, key, xp);
-  }
   if (xp->xp_context == EXPAND_FILES
       || xp->xp_context == EXPAND_DIRECTORIES
       || xp->xp_context == EXPAND_SHELLCMD) {
@@ -3922,11 +3804,6 @@ void f_getcompletion(typval_T *argvars, typval_T *rettv, EvalFuncData fptr)
     }
 
     xpc.xp_arg = (char *)(type + 11);
-    break;
-
-  case EXPAND_MENUS:
-    set_context_in_menu_cmd(&xpc, "menu", xpc.xp_pattern, false);
-    xpc.xp_pattern_len -= (size_t)(xpc.xp_pattern - pattern_start);
     break;
 
   case EXPAND_SIGN:

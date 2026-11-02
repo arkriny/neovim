@@ -22,9 +22,3 @@ let syntax_manual = 1
 augroup syntaxset
   au! FileType *	exe "set syntax=" . &syntax
 augroup END
-
-" If the GUI is already running, may still need to install the FileType menu.
-" Don't do it when the 'M' flag is included in 'guioptions'.
-if has("menu") && has("gui_running") && !exists("did_install_syntax_menu") && &guioptions !~# 'M'
-  source $VIMRUNTIME/menu.vim
-endif

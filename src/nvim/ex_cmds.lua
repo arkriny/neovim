@@ -71,18 +71,6 @@ M.cmds = {
     func = 'ex_all',
   },
   {
-    command = 'amenu',
-    flags = bit.bor(RANGE, ZEROR, EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_OTHER',
-    func = 'ex_menu',
-  },
-  {
-    command = 'anoremenu',
-    flags = bit.bor(RANGE, ZEROR, EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_OTHER',
-    func = 'ex_menu',
-  },
-  {
     command = 'args',
     flags = bit.bor(BANG, FILES, CMDARG, ARGOPT, TRLBAR),
     addr_type = 'ADDR_NONE',
@@ -153,12 +141,6 @@ M.cmds = {
     flags = bit.bor(BANG, WORD1, TRLBAR, CMDWIN, LOCK_OK),
     addr_type = 'ADDR_NONE',
     func = 'ex_autocmd',
-  },
-  {
-    command = 'aunmenu',
-    flags = bit.bor(EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_NONE',
-    func = 'ex_menu',
   },
   {
     command = 'buffer',
@@ -541,12 +523,6 @@ M.cmds = {
     func = 'ex_mapclear',
   },
   {
-    command = 'cmenu',
-    flags = bit.bor(RANGE, ZEROR, EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_OTHER',
-    func = 'ex_menu',
-  },
-  {
     command = 'cnext',
     flags = bit.bor(RANGE, COUNT, TRLBAR, BANG),
     addr_type = 'ADDR_UNSIGNED',
@@ -575,12 +551,6 @@ M.cmds = {
     flags = bit.bor(EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
     addr_type = 'ADDR_NONE',
     func = 'ex_abbreviate',
-  },
-  {
-    command = 'cnoremenu',
-    flags = bit.bor(RANGE, ZEROR, EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_OTHER',
-    func = 'ex_menu',
   },
   {
     command = 'copy',
@@ -683,12 +653,6 @@ M.cmds = {
     flags = bit.bor(EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
     addr_type = 'ADDR_NONE',
     func = 'ex_abbreviate',
-  },
-  {
-    command = 'cunmenu',
-    flags = bit.bor(EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_NONE',
-    func = 'ex_menu',
   },
   {
     command = 'cwindow',
@@ -893,12 +857,6 @@ M.cmds = {
     flags = bit.bor(EXTRA, NOTRLCOM, SBOXOK, CMDWIN, LOCK_OK),
     addr_type = 'ADDR_NONE',
     func = 'ex_else',
-  },
-  {
-    command = 'emenu',
-    flags = bit.bor(NEEDARG, EXTRA, TRLBAR, NOTRLCOM, RANGE, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_OTHER',
-    func = 'ex_emenu',
   },
   {
     command = 'endif',
@@ -1195,12 +1153,6 @@ M.cmds = {
     func = 'ex_mapclear',
   },
   {
-    command = 'imenu',
-    flags = bit.bor(RANGE, ZEROR, EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_OTHER',
-    func = 'ex_menu',
-  },
-  {
     command = 'inoremap',
     flags = bit.bor(EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
     addr_type = 'ADDR_NONE',
@@ -1211,12 +1163,6 @@ M.cmds = {
     flags = bit.bor(EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
     addr_type = 'ADDR_NONE',
     func = 'ex_abbreviate',
-  },
-  {
-    command = 'inoremenu',
-    flags = bit.bor(RANGE, ZEROR, EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_OTHER',
-    func = 'ex_menu',
   },
   {
     command = 'intro',
@@ -1253,12 +1199,6 @@ M.cmds = {
     flags = bit.bor(EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
     addr_type = 'ADDR_NONE',
     func = 'ex_abbreviate',
-  },
-  {
-    command = 'iunmenu',
-    flags = bit.bor(EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_NONE',
-    func = 'ex_menu',
   },
   {
     command = 'join',
@@ -1719,18 +1659,6 @@ M.cmds = {
     func = 'ex_match',
   },
   {
-    command = 'menu',
-    flags = bit.bor(RANGE, ZEROR, BANG, EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_OTHER',
-    func = 'ex_menu',
-  },
-  {
-    command = 'menutranslate',
-    flags = bit.bor(EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_NONE',
-    func = 'ex_menutranslate',
-  },
-  {
     command = 'messages',
     flags = bit.bor(EXTRA, TRLBAR, RANGE, CMDWIN, LOCK_OK),
     addr_type = 'ADDR_OTHER',
@@ -1797,22 +1725,10 @@ M.cmds = {
     func = 'ex_mapclear',
   },
   {
-    command = 'nmenu',
-    flags = bit.bor(RANGE, ZEROR, EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_OTHER',
-    func = 'ex_menu',
-  },
-  {
     command = 'nnoremap',
     flags = bit.bor(EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
     addr_type = 'ADDR_NONE',
     func = 'ex_map',
-  },
-  {
-    command = 'nnoremenu',
-    flags = bit.bor(RANGE, ZEROR, EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_OTHER',
-    func = 'ex_menu',
   },
   {
     command = 'noremap',
@@ -1839,12 +1755,6 @@ M.cmds = {
     func = 'ex_abbreviate',
   },
   {
-    command = 'noremenu',
-    flags = bit.bor(RANGE, ZEROR, BANG, EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_OTHER',
-    func = 'ex_menu',
-  },
-  {
     command = 'noswapfile',
     flags = bit.bor(NEEDARG, EXTRA, NOTRLCOM),
     addr_type = 'ADDR_NONE',
@@ -1869,12 +1779,6 @@ M.cmds = {
     func = 'ex_unmap',
   },
   {
-    command = 'nunmenu',
-    flags = bit.bor(EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_NONE',
-    func = 'ex_menu',
-  },
-  {
     command = 'oldfiles',
     flags = bit.bor(BANG, TRLBAR, SBOXOK, CMDWIN, LOCK_OK),
     addr_type = 'ADDR_NONE',
@@ -1893,12 +1797,6 @@ M.cmds = {
     func = 'ex_mapclear',
   },
   {
-    command = 'omenu',
-    flags = bit.bor(RANGE, ZEROR, EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_OTHER',
-    func = 'ex_menu',
-  },
-  {
     command = 'only',
     flags = bit.bor(BANG, RANGE, COUNT, TRLBAR),
     addr_type = 'ADDR_WINDOWS',
@@ -1911,12 +1809,6 @@ M.cmds = {
     func = 'ex_map',
   },
   {
-    command = 'onoremenu',
-    flags = bit.bor(RANGE, ZEROR, EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_OTHER',
-    func = 'ex_menu',
-  },
-  {
     command = 'options',
     flags = bit.bor(TRLBAR),
     addr_type = 'ADDR_NONE',
@@ -1927,12 +1819,6 @@ M.cmds = {
     flags = bit.bor(EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
     addr_type = 'ADDR_NONE',
     func = 'ex_unmap',
-  },
-  {
-    command = 'ounmenu',
-    flags = bit.bor(EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_NONE',
-    func = 'ex_menu',
   },
   {
     command = 'ownsyntax',
@@ -1981,12 +1867,6 @@ M.cmds = {
     flags = bit.bor(RANGE, BANG, COUNT, TRLBAR, ZEROR),
     addr_type = 'ADDR_OTHER',
     func = 'ex_tag',
-  },
-  {
-    command = 'popup',
-    flags = bit.bor(NEEDARG, EXTRA, BANG, TRLBAR, NOTRLCOM, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_NONE',
-    func = 'ex_popup',
   },
   {
     command = 'ppop',
@@ -2411,12 +2291,6 @@ M.cmds = {
     func = 'ex_mapclear',
   },
   {
-    command = 'smenu',
-    flags = bit.bor(RANGE, ZEROR, EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_OTHER',
-    func = 'ex_menu',
-  },
-  {
     command = 'snext',
     flags = bit.bor(RANGE, BANG, FILES, CMDARG, ARGOPT, TRLBAR),
     addr_type = 'ADDR_OTHER',
@@ -2434,12 +2308,6 @@ M.cmds = {
     flags = bit.bor(EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
     addr_type = 'ADDR_NONE',
     func = 'ex_map',
-  },
-  {
-    command = 'snoremenu',
-    flags = bit.bor(RANGE, ZEROR, EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_OTHER',
-    func = 'ex_menu',
   },
   {
     command = 'source',
@@ -2572,12 +2440,6 @@ M.cmds = {
     flags = bit.bor(EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
     addr_type = 'ADDR_NONE',
     func = 'ex_unmap',
-  },
-  {
-    command = 'sunmenu',
-    flags = bit.bor(EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_NONE',
-    func = 'ex_menu',
   },
   {
     command = 'suspend',
@@ -2772,30 +2634,6 @@ M.cmds = {
     func = 'ex_tag',
   },
   {
-    command = 'tlmenu',
-    flags = bit.bor(RANGE, ZEROR, EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_OTHER',
-    func = 'ex_menu',
-  },
-  {
-    command = 'tlnoremenu',
-    flags = bit.bor(RANGE, ZEROR, EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_OTHER',
-    func = 'ex_menu',
-  },
-  {
-    command = 'tlunmenu',
-    flags = bit.bor(EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_NONE',
-    func = 'ex_menu',
-  },
-  {
-    command = 'tmenu',
-    flags = bit.bor(RANGE, ZEROR, EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_OTHER',
-    func = 'ex_menu',
-  },
-  {
     command = 'tmap',
     flags = bit.bor(EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
     addr_type = 'ADDR_NONE',
@@ -2856,12 +2694,6 @@ M.cmds = {
     func = 'ex_tag',
   },
   {
-    command = 'tunmenu',
-    flags = bit.bor(EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_NONE',
-    func = 'ex_menu',
-  },
-  {
     command = 'tunmap',
     flags = bit.bor(EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
     addr_type = 'ADDR_NONE',
@@ -2920,12 +2752,6 @@ M.cmds = {
     flags = bit.bor(BANG, EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
     addr_type = 'ADDR_NONE',
     func = 'ex_unmap',
-  },
-  {
-    command = 'unmenu',
-    flags = bit.bor(BANG, EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_NONE',
-    func = 'ex_menu',
   },
   {
     command = 'unsilent',
@@ -3006,12 +2832,6 @@ M.cmds = {
     func = 'ex_mapclear',
   },
   {
-    command = 'vmenu',
-    flags = bit.bor(RANGE, ZEROR, EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_OTHER',
-    func = 'ex_menu',
-  },
-  {
     command = 'vnoremap',
     flags = bit.bor(EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
     addr_type = 'ADDR_NONE',
@@ -3024,12 +2844,6 @@ M.cmds = {
     func = 'ex_splitview',
   },
   {
-    command = 'vnoremenu',
-    flags = bit.bor(RANGE, ZEROR, EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_OTHER',
-    func = 'ex_menu',
-  },
-  {
     command = 'vsplit',
     flags = bit.bor(BANG, FILE1, RANGE, CMDARG, ARGOPT, TRLBAR),
     addr_type = 'ADDR_OTHER',
@@ -3040,12 +2854,6 @@ M.cmds = {
     flags = bit.bor(EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
     addr_type = 'ADDR_NONE',
     func = 'ex_unmap',
-  },
-  {
-    command = 'vunmenu',
-    flags = bit.bor(EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_NONE',
-    func = 'ex_menu',
   },
   {
     command = 'write',
@@ -3162,34 +2970,16 @@ M.cmds = {
     func = 'ex_mapclear',
   },
   {
-    command = 'xmenu',
-    flags = bit.bor(RANGE, ZEROR, EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_OTHER',
-    func = 'ex_menu',
-  },
-  {
     command = 'xnoremap',
     flags = bit.bor(EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
     addr_type = 'ADDR_NONE',
     func = 'ex_map',
   },
   {
-    command = 'xnoremenu',
-    flags = bit.bor(RANGE, ZEROR, EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_OTHER',
-    func = 'ex_menu',
-  },
-  {
     command = 'xunmap',
     flags = bit.bor(EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
     addr_type = 'ADDR_NONE',
     func = 'ex_unmap',
-  },
-  {
-    command = 'xunmenu',
-    flags = bit.bor(EXTRA, TRLBAR, NOTRLCOM, CTRLV, CMDWIN, LOCK_OK),
-    addr_type = 'ADDR_NONE',
-    func = 'ex_menu',
   },
   {
     command = 'yank',

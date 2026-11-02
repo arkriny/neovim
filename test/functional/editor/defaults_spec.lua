@@ -1,5 +1,5 @@
 --
--- Tests for default autocmds, mappings, commands, and menus.
+-- Tests for default autocmds, mappings, and commands.
 --
 -- See options/defaults_spec.lua for default options and environment decisions.
 --
@@ -25,70 +25,6 @@ describe('default', function()
         t.neq('terminal', n.api.nvim_get_option_value('buftype', { buf = 0 }))
         t.eq(2, n.eval('g:n'))
       end)
-    end)
-  end)
-
-  describe('popupmenu', function()
-    it('can be disabled by user', function()
-      n.clear {
-        args = { '+autocmd! nvim.popupmenu', '+aunmenu PopUp' },
-      }
-      local screen = Screen.new(40, 8)
-      n.insert([[
-        1 line 1
-        2 https://example.com
-        3 line 3
-        4 line 4]])
-
-      n.api.nvim_input_mouse('right', 'press', '', 0, 1, 4)
-      screen:expect({
-        grid = [[
-          1 line 1                                |
-          2 ht^tps://example.com                   |
-          3 line 3                                |
-          4 line 4                                |
-          {1:~                                       }|*3
-                                                  |
-        ]],
-      })
-    end)
-
-    it('right-click on URL shows "Open in web browser"', function()
-      n.clear()
-      local screen = Screen.new(40, 8)
-      n.insert([[
-        1 line 1
-        2 https://example.com
-        3 line 3
-        4 line 4]])
-
-      n.api.nvim_input_mouse('right', 'press', '', 0, 3, 4)
-      screen:expect({
-        grid = [[
-          1 line 1                                |
-          2 https://example.com                   |
-          3 line 3                                |
-          4 li^ne 4                                |
-          {1:~  }{4: Inspect              }{1:               }|
-          {1:~  }{4:                      }{1:               }|
-          {1:~  }{4: Paste                }{1:               }|
-             {4: Select All           }               |
-        ]],
-      })
-
-      n.api.nvim_input_mouse('right', 'press', '', 0, 1, 4)
-      screen:expect({
-        grid = [[
-          1 line 1                                |
-          2 ht^tps://example.com                   |
-          3 l{4: Open in web browser  }               |
-          4 l{4: Inspect              }               |
-          {1:~  }{4:                      }{1:               }|
-          {1:~  }{4: Paste                }{1:               }|
-          {1:~  }{4: Select All           }{1:               }|
-             {4:                      }               |
-        ]],
-      })
     end)
   end)
 

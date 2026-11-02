@@ -4159,19 +4159,6 @@ local options = {
         	Mac OS/X and MS-Windows.
         							*'go-i'*
           'i'	Use a Vim icon.
-        							*'go-m'*
-          'm'	Menu bar is present.
-        							*'go-M'*
-          'M'	The system menu "$VIMRUNTIME/menu.vim" is not sourced.  Note
-        	that this flag must be added in the vimrc file, before
-        	switching on syntax or filetype recognition (when the |gvimrc|
-        	file is sourced the system menu has already been loaded; the
-        	`:syntax on` and `:filetype on` commands load the menu too).
-        							*'go-g'*
-          'g'	Grey menu items: Make menu items that are not active grey.  If
-        	'g' is not included inactive menu items are not shown at all.
-        							*'go-T'*
-          'T'	Include Toolbar.  Currently only in Win32 GUI.
         							*'go-r'*
           'r'	Right-hand scrollbar is always present.
         							*'go-R'*
@@ -5152,36 +5139,6 @@ local options = {
       varname = 'p_langmap',
     },
     {
-      abbreviation = 'lm',
-      defaults = '',
-      desc = [=[
-        Language to use for menu translation.  Tells which file is loaded
-        from the "lang" directory in 'runtimepath': >vim
-        	"lang/menu_" .. &langmenu .. ".vim"
-        <	(without the spaces).  For example, to always use the Dutch menus, no
-        matter what $LANG is set to: >vim
-        	set langmenu=nl_NL.ISO_8859-1
-        <	When 'langmenu' is empty, |v:lang| is used.
-        Only normal file name characters can be used, `/\*?[|<>` are illegal.
-        If your $LANG is set to a non-English language but you do want to use
-        the English menus: >vim
-        	set langmenu=none
-        <	This option must be set before loading menus, switching on filetype
-        detection or syntax highlighting.  Once the menus are defined setting
-        this option has no effect.  But you could do this: >vim
-        	source $VIMRUNTIME/delmenu.vim
-        	set langmenu=de_DE.ISO_8859-1
-        	source $VIMRUNTIME/menu.vim
-        <	Warning: This deletes all menus that you defined yourself!
-      ]=],
-      full_name = 'langmenu',
-      normal_fname_chars = true,
-      scope = { 'global' },
-      short_desc = N_('language to be used for the menus'),
-      type = 'string',
-      varname = 'p_lm',
-    },
-    {
       abbreviation = 'lnr',
       cb = 'did_set_langnoremap',
       defaults = true,
@@ -5761,20 +5718,6 @@ local options = {
       varname = 'p_msc',
     },
     {
-      abbreviation = 'mis',
-      defaults = 25,
-      desc = [=[
-        Maximum number of items to use in a menu.  Used for menus that are
-        generated from a list of items, e.g., the Buffers menu.  Changing this
-        option has no direct effect, the menu must be refreshed first.
-      ]=],
-      full_name = 'menuitems',
-      scope = { 'global' },
-      short_desc = N_('maximum number of items in a menu'),
-      type = 'number',
-      varname = 'p_mis',
-    },
-    {
       abbreviation = 'mopt',
       cb = 'did_set_messagesopt',
       defaults = 'hit-enter,history:500,progress:c',
@@ -6064,52 +6007,24 @@ local options = {
     },
     {
       abbreviation = 'mousem',
-      defaults = 'popup_setpos',
-      values = { 'extend', 'popup', 'popup_setpos' },
+      defaults = 'extend',
+      values = { 'extend' },
       desc = [=[
-        Sets the model to use for the mouse.  The name mostly specifies what
-        the right mouse button is used for:
-           extend	Right mouse button extends a selection.  This works
-        		like in an xterm.
-           popup	Right mouse button pops up a menu.  The shifted left
-        		mouse button extends a selection.  This works like
-        		with Microsoft Windows.
-           popup_setpos Like "popup", but the cursor will be moved to the
-        		position where the mouse was clicked, and thus the
-        		selected operation will act upon the clicked object.
-        		If clicking inside a selection, that selection will
-        		be acted upon, i.e. no cursor move.  This implies of
-        		course, that right clicking outside a selection will
-        		end Visual mode.
-        Overview of what button does what for each model:
-        mouse		    extend		popup(_setpos) ~
-        left click	    place cursor	place cursor
-        left drag	    start selection	start selection
-        shift-left	    search word		extend selection
-        right click	    extend selection	popup menu (place cursor)
-        right drag	    extend selection	-
-        middle click	    paste		paste
+        Sets the model to use for the mouse.  The right mouse button extends
+        a selection.  This works like in an xterm.
 
-        In the "popup" model the right mouse button produces a pop-up menu.
-        Nvim creates a default |popup-menu| but you can redefine it.
+        Overview of what button does what:
+        mouse		    extend ~
+        left click	    place cursor
+        left drag	    start selection
+        shift-left	    search word
+        right click	    extend selection
+        right drag	    extend selection
+        middle click	    paste
 
         Note that you can further refine the meaning of buttons with mappings.
         See |mouse-overview|.  But mappings are NOT used for modeless selection.
 
-        Example: >vim
-            map <S-LeftMouse>     <RightMouse>
-            map <S-LeftDrag>      <RightDrag>
-            map <S-LeftRelease>   <RightRelease>
-            map <2-S-LeftMouse>   <2-RightMouse>
-            map <2-S-LeftDrag>    <2-RightDrag>
-            map <2-S-LeftRelease> <2-RightRelease>
-            map <3-S-LeftMouse>   <3-RightMouse>
-            map <3-S-LeftDrag>    <3-RightDrag>
-            map <3-S-LeftRelease> <3-RightRelease>
-            map <4-S-LeftMouse>   <4-RightMouse>
-            map <4-S-LeftDrag>    <4-RightDrag>
-            map <4-S-LeftRelease> <4-RightRelease>
-        <
         Mouse commands requiring the CTRL modifier can be simulated by typing
         the "g" key before using the mouse:
             "g<LeftMouse>"  is "<C-LeftMouse>	(jump to tag under mouse click)
@@ -7122,10 +7037,8 @@ local options = {
           ftplugin/	filetype plugins |write-filetype-plugin|
           indent/	indent scripts |indent-expression|
           keymap/	key mapping files |mbyte-keymap|
-          lang/		menu translations |:menutrans|
           lsp/		LSP client configurations |lsp-config|
           lua/		|Lua| plugins
-          menu.vim	GUI menus |menu.vim|
           pack/		packages |:packadd|
           parser/	|treesitter| syntax parsers
           plugin/	plugin scripts |write-plugin|
@@ -10518,33 +10431,6 @@ local options = {
       type = 'string',
       varname = 'p_wop',
       flags_varname = 'wop_flags',
-    },
-    {
-      abbreviation = 'wak',
-      defaults = 'menu',
-      values = { 'yes', 'menu', 'no' },
-      desc = [=[
-        		only used in Win32
-        Some GUI versions allow the access to menu entries by using the ALT
-        key in combination with a character that appears underlined in the
-        menu.  This conflicts with the use of the ALT key for mappings and
-        entering special characters.  This option tells what to do:
-          no	Don't use ALT keys for menus.  ALT key combinations can be
-        	mapped, but there is no automatic handling.
-          yes	ALT key handling is done by the windowing system.  ALT key
-        	combinations cannot be mapped.
-          menu	Using ALT in combination with a character that is a menu
-        	shortcut key, will be handled by the windowing system.  Other
-        	keys can be mapped.
-        If the menu is disabled by excluding 'm' from 'guioptions', the ALT
-        key is never used for the menu.
-        This option is not used for <F10>; on Win32.
-      ]=],
-      full_name = 'winaltkeys',
-      scope = { 'global' },
-      short_desc = N_('when the windows system handles ALT keys'),
-      type = 'string',
-      varname = 'p_wak',
     },
     {
       abbreviation = 'wbr',

@@ -1,7 +1,7 @@
 --
 -- Tests for default options and environment decisions.
 --
--- See editor/defaults_spec.lua for default autocmds, mappings, commands, and menus.
+-- See editor/defaults_spec.lua for default autocmds, mappings, and commands.
 --
 
 local t = require('test.testutil')

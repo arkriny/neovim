@@ -11,7 +11,6 @@
 #include "nvim/getchar_defs.h"
 #include "nvim/iconv_defs.h"
 #include "nvim/macros_defs.h"
-#include "nvim/menu_defs.h"
 #include "nvim/os/os_defs.h"
 #include "nvim/runtime_defs.h"
 #include "nvim/state_defs.h"
@@ -346,12 +345,6 @@ EXTERN bool mouse_past_eol INIT( = false);     // mouse right of line
 EXTERN int mouse_dragging INIT( = 0);          // extending Visual area with
                                                // mouse dragging
 
-// The root of the menu hierarchy.
-EXTERN vimmenu_T *root_menu INIT( = NULL);
-// While defining the system menu, sys_menu is true.  This avoids
-// overruling of menus that the user already defined.
-EXTERN bool sys_menu INIT( = false);
-
 // All windows are linked in a list. firstwin points to the first entry,
 // lastwin to the last entry (can be the same as firstwin) and curwin to the
 // currently active window.
@@ -464,7 +457,7 @@ EXTERN int VIsual_select_reg INIT( = 0);
 EXTERN bool VIsual_select_exclu_adj INIT( = false);
 /// Restart Select mode when next cmd finished
 EXTERN int restart_VIsual_select INIT( = 0);
-/// Whether to restart the selection after a Select-mode mapping or menu.
+/// Whether to restart the selection after a Select-mode mapping.
 EXTERN int VIsual_reselect;
 /// Type of Visual mode.
 EXTERN int VIsual_mode INIT( = 'v');

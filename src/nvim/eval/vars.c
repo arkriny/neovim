@@ -1827,18 +1827,6 @@ static int do_lock_var(lval_T *lp, char *name_end FUNC_ATTR_UNUSED, exarg_T *eap
   return ret;
 }
 
-/// Delete all "menutrans_" variables.
-void del_menutrans_vars(void)
-{
-  hash_lock(&globvarht);
-  HASHTAB_ITER(&globvarht, hi, {
-    if (strncmp(hi->hi_key, "menutrans_", 10) == 0) {
-      delete_var(&globvarht, hi);
-    }
-  });
-  hash_unlock(&globvarht);
-}
-
 /// @return  global variable dictionary
 dict_T *get_globvar_dict(void)
   FUNC_ATTR_PURE FUNC_ATTR_NONNULL_RET
