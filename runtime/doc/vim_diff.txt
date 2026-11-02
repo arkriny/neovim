@@ -94,7 +94,6 @@ Defaults                                            *defaults* *nvim-defaults*
 - 'viminfo' includes "!"
 - 'wildoptions' defaults to "pum,tagfile"
 
-- |editorconfig| plugin is enabled, .editorconfig settings are applied.
 - |matchit| plugin is enabled. To disable it in your config: >vim
     :let loaded_matchit = 1
 - |package-spellfile| plugin is enabled, spellfiles are installed by default
