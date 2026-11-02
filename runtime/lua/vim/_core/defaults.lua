@@ -1040,13 +1040,3 @@ do
     })
   end
 end
-
---- Default options
-do
-  --- Default 'grepprg' to ripgrep if available.
-  if vim.fn.executable('rg') == 1 then
-    -- Use -uu to make ripgrep not check ignore files/skip dot-files
-    vim.o.grepprg = 'rg --vimgrep -uu '
-    vim.o.grepformat = '%f:%l:%c:%m'
-  end
-end

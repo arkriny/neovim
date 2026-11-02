@@ -3846,8 +3846,6 @@ local options = {
         Format to recognize for the ":grep" command output.
         This is a scanf-like string that uses the same format as the
         'errorformat' option: see |errorformat|.
-
-        Defaults to "%f:%l:%c:%m" if ripgrep ('grepprg') is available.
       ]=],
       full_name = 'grepformat',
       list = 'onecomma',
@@ -3880,16 +3878,8 @@ local options = {
         See also |:make_makeprg|, most of the comments there apply to 'grepprg'.
 
         Defaults to:
-        - "rg --vimgrep -uu " if ripgrep is available (|:checkhealth|),
         - "grep -HIn $* /dev/null" on Unix,
         - "findstr /n $* nul" on Windows.
-
-        Ripgrep may perform additional filtering such as using .gitignore rules
-        and skipping hidden files. This is disabled by default (via "-u") to
-        more closely match the behaviour of standard grep.
-        You can make ripgrep match Vim's case handling using the
-        -i/--ignore-case and -S/--smart-case options. Handle |OptionSet| to
-        dynamically update 'grepprg' when e.g. 'ignorecase' is changed.
 
         This option cannot be set from a |modeline| or in the |sandbox|, for
         security reasons.

@@ -188,8 +188,7 @@ The following new features were added.
     correctly without it. (Use |gF| for filepaths suffixed with ":line:col").
   • 'comments' includes "fb:•".
   • 'shortmess' includes the "C" flag.
-  • 'grepprg' uses the -H and -I flags for grep by default,
-    and defaults to using ripgrep if available.
+  • 'grepprg' uses the -H and -I flags for grep by default
   • "]d" and "[d" in Normal mode map to |vim.diagnostic.goto_next()| and
     |vim.diagnostic.goto_prev()|, respectively. |]d-default| |[d-default|
   • <C-W>d (and <C-W><C-D>) map to |vim.diagnostic.open_float()|
