@@ -68,19 +68,6 @@ To create an empty vimrc: >
 For more info see |vimrc|.
 
 ==============================================================================
-*01.3*	Using the Vim tutor			         *tutor* *vimtutor*
-
-Instead of reading the text (boring!) you can use :Tutor to learn your first
-Vim commands.  This is a 30-minute tutorial that teaches the most basic Vim
-functionality hands-on.
-
-To start the tutorial, execute >
-
-        :Tutor
-<
-from within nvim. The tutorial will lead you from that point. Have fun!
-
-==============================================================================
 *01.4*	Copyright					*manual-copyright*
 
 The Vim user manual and reference manual are Copyright (c) 1988 by Bram

@@ -5403,7 +5403,6 @@ vim.go.ruf = vim.go.rulerformat
 ---   rplugin/	`remote-plugin` scripts
 ---   spell/	spell checking files `spell`
 ---   syntax/	syntax files `mysyntaxfile`
----   tutor/	tutorial files `:Tutor`
 ---
 --- And any other file searched for with the `:runtime` command.
 ---
